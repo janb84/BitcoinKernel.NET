@@ -78,22 +78,19 @@ public sealed class Block : IDisposable
     public byte[] ToBytes()
     {
         ThrowIfDisposed();
-        var bytes = new System.Collections.Generic.List<byte>();
+        byte[]? result = null;
 
         NativeMethods.BlockToBytes(_handle, (data, size, userData) =>
         {
             unsafe
             {
                 var span = new ReadOnlySpan<byte>((byte*)data, (int)size);
-                foreach (var b in span)
-                {
-                    bytes.Add(b);
-                }
+                result = span.ToArray();
             }
             return 0;
         }, IntPtr.Zero);
 
-        return bytes.ToArray();
+        return result ?? Array.Empty<byte>();
     }
 
     /// <summary>
