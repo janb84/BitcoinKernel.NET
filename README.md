@@ -1,9 +1,9 @@
 # BitcoinKernel.NET
 
-.NET bindings and high-level library for [libbitcoinkernel](https://github.com/bitcoin/bitcoin/blob/master/src/kernel/README.md), providing access to Bitcoin Core's consensus and validation logic.
+.NET bindings and high-level library for [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/master/src/kernel), providing access to Bitcoin Core's consensus and validation logic.
 ⚠️🚧 This library is still under contruction. ⚠️🚧
 
-This library uses libbitcoinkernel](https://github.com/bitcoin/bitcoin/blob/master/src/kernel/README.md) which is in an experimental state, do not use for production purposes.  
+This library uses [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/master/src/kernel) which is in an experimental state, do not use for production purposes.  
 
 ## Overview
 
@@ -99,7 +99,7 @@ For other platforms, for now,  you'll need to build libbitcoinkernel from the [B
 ## Documentation
 
 - [API Documentation](docs/) (coming soon)
-- [libbitcoinkernel Documentation](https://github.com/bitcoin/bitcoin/blob/master/src/kernel/README.md)
+- [libbitcoinkernel Documentation](https://thecharlatan.ch/kernel-docs/index.html)
 - [Bitcoin Core Developer Documentation](https://github.com/bitcoin/bitcoin/tree/master/doc)
 
 ## Contributing
@@ -118,6 +118,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Built on [libbitcoinkernel](https://github.com/bitcoin/bitcoin) from Bitcoin Core
+- Built on [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/master/src/kernel) from Bitcoin Core
 
 **Note**: This library provides access to Bitcoin Core's consensus engine. The libbitcoinkernel and this package is stil experimental and not ready for production use. 
