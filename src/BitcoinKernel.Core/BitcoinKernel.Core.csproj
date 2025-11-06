@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    
+    <!-- NuGet Package Metadata -->
+    <PackageId>BitcoinKernel.Core</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>JanB84</Authors>
+    <Description>.NET bindings and managed wrappers for libbitcoinkernel. Provides direct access to Bitcoin Core consensus and validation logic with automatic memory management.</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/JanB84/BitcoinKernel.NET</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/JanB84/BitcoinKernel.NET</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>bitcoin;kernel;libbitcoinkernel;wrapper;core;blockchain</PackageTags>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <!-- Bundle referenced projects into this package -->
+    <TargetsForTfmSpecificContentInPackage>$(TargetsForTfmSpecificContentInPackage);IncludeReferencedProjectsInPackage</TargetsForTfmSpecificContentInPackage>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include Interop: it will be bundled into the Core package -->
+    <ProjectReference Include="..\..\src\BitcoinKernel.Interop\BitcoinKernel.Interop.csproj" />
+  </ItemGroup>
+  
+  <!-- When packing, include the Interop DLL and native libraries in this package -->
+  <Target Name="IncludeReferencedProjectsInPackage" DependsOnTargets="Build" BeforeTargets="GenerateNuspec">
+    <ItemGroup>
+      <!-- Include Interop DLL -->
+      <_PackageFiles Include="$(OutputPath)BitcoinKernel.Interop.dll">
+        <BuildAction>Content</BuildAction>
+        <PackagePath>lib/$(TargetFramework)/BitcoinKernel.Interop.dll</PackagePath>
+      </_PackageFiles>
+      
+      <!-- Include native libraries from runtimes folder -->
+      <_PackageFiles Include="$(OutputPath)runtimes\**\*.*" Condition="Exists('$(OutputPath)runtimes')">
+        <BuildAction>Content</BuildAction>
+        <PackagePath>runtimes/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+      </_PackageFiles>
+    </ItemGroup>
+  </Target>
+
+</Project>

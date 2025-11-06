@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Include native libraries for macOS -->
+    <None Include="..\..\native\osx-x64\libbitcoinkernel.dylib" Link="runtimes\osx-x64\native\libbitcoinkernel.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes/osx-x64/native</PackagePath>
+    </None>
+    
+  </ItemGroup>
+
+</Project>
