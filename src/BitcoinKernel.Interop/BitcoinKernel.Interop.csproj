@@ -14,6 +14,11 @@
       <Pack>true</Pack>
       <PackagePath>runtimes/osx-x64/native</PackagePath>
     </None>
+    <None Include="..\..\native\linux-x64\libbitcoinkernel.so" Link="runtimes\linux-x64\native\libbitcoinkernel.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes/linux-x64/native</PackagePath>
+    </None>
     
   </ItemGroup>
 
