@@ -1,5 +1,6 @@
 
 
+using System.Dynamic;
 using BitcoinKernel.Core.Exceptions;
 using BitcoinKernel.Interop;
 
@@ -30,9 +31,12 @@ public sealed class Chain
     /// </summary>
     public BlockIndex GetTip()
     {
-        IntPtr tipPtr = NativeMethods.ChainGetTip(_handle);
+
+        //get chain by height
+        IntPtr tipPtr = NativeMethods.ChainGetByHeight(_handle, Height);
         if (tipPtr == IntPtr.Zero)
-            throw new KernelException("Failed to get chain tip");
+            throw new KernelException("Failed to get chain tip");  
+
 
         return new BlockIndex(tipPtr, ownsHandle: false);
     }
@@ -55,7 +59,7 @@ public sealed class Chain
     /// </summary>
     public BlockIndex GetGenesis()
     {
-        IntPtr genesisPtr = NativeMethods.ChainGetGenesis(_handle);
+        IntPtr genesisPtr = NativeMethods.ChainGetByHeight(_handle, 0);
         if (genesisPtr == IntPtr.Zero)
             throw new KernelException("Failed to get genesis block");
 

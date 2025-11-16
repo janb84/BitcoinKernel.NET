@@ -70,13 +70,13 @@ public sealed class ChainstateManager : IDisposable
     public bool ProcessBlock(Block block)
     {
         ThrowIfDisposed();
-        if (block == null) throw new ArgumentNullException(nameof(block));
+        ArgumentNullException.ThrowIfNull(block);
 
-        int newBlock;
+        int newBlock = 0;
         int result = NativeMethods.ChainstateManagerProcessBlock(
             _handle,
             block.Handle,
-            out newBlock);
+            ref newBlock);
 
         if (result != 0)
         {
@@ -94,55 +94,29 @@ public sealed class ChainstateManager : IDisposable
     public bool ImportBlocks(string[] blockFilePaths)
     {
         ThrowIfDisposed();
-        if (blockFilePaths == null) throw new ArgumentNullException(nameof(blockFilePaths));
+        ArgumentNullException.ThrowIfNull(blockFilePaths);
         if (blockFilePaths.Length == 0) throw new ArgumentException("At least one block file path must be provided", nameof(blockFilePaths));
 
-        // Prepare the string data for marshalling
-        IntPtr[] stringPointers = new IntPtr[blockFilePaths.Length];
+        ArgumentNullException.ThrowIfNull(blockFilePaths);
+
+        // Prepare the string lengths
         nuint[] stringLengths = new nuint[blockFilePaths.Length];
-
-        try
+        for (int i = 0; i < blockFilePaths.Length; i++)
         {
-            // Pin each string and get its pointer and length
-            for (int i = 0; i < blockFilePaths.Length; i++)
-            {
-                if (string.IsNullOrEmpty(blockFilePaths[i]))
-                    throw new ArgumentException($"Block file path at index {i} cannot be null or empty", nameof(blockFilePaths));
-
-                unsafe
-                {
-                    fixed (char* strPtr = blockFilePaths[i])
-                    {
-                        // Convert UTF-16 string to UTF-8 bytes
-                        byte[] utf8Bytes = System.Text.Encoding.UTF8.GetBytes(blockFilePaths[i]);
-                        stringPointers[i] = Marshal.AllocHGlobal(utf8Bytes.Length + 1);
-                        Marshal.Copy(utf8Bytes, 0, stringPointers[i], utf8Bytes.Length);
-                        Marshal.WriteByte(stringPointers[i], utf8Bytes.Length, 0); // Null terminator
-                        stringLengths[i] = (nuint)utf8Bytes.Length;
-                    }
-                }
-            }
-
-            // Call the native method
-            int result = NativeMethods.ChainstateManagerImportBlocks(
-                _handle,
-                stringPointers,
-                stringLengths,
-                (nuint)blockFilePaths.Length);
-
-            return result == 0; // 0 = success
+            if (string.IsNullOrEmpty(blockFilePaths[i]))
+                throw new ArgumentException($"Block file path at index {i} cannot be null or empty", nameof(blockFilePaths));
+            
+            stringLengths[i] = (nuint)System.Text.Encoding.UTF8.GetByteCount(blockFilePaths[i]);
         }
-        finally
-        {
-            // Free allocated memory
-            foreach (var ptr in stringPointers)
-            {
-                if (ptr != IntPtr.Zero)
-                {
-                    Marshal.FreeHGlobal(ptr);
-                }
-            }
-        }
+
+        // Call the native method
+        int result = NativeMethods.ChainstateManagerImportBlocks(
+            _handle,
+            blockFilePaths,
+            stringLengths,
+            (nuint)blockFilePaths.Length);
+
+        return result == 0; // 0 = success
     }
 
     /// <summary>

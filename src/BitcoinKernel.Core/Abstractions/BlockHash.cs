@@ -56,13 +56,7 @@ public sealed class BlockHash : IDisposable
     {
         ThrowIfDisposed();
         var bytes = new byte[32];
-        unsafe
-        {
-            fixed (byte* ptr = bytes)
-            {
-                NativeMethods.BlockHashToBytes(_handle, ptr);
-            }
-        }
+        NativeMethods.BlockHashToBytes(_handle, bytes);
         return bytes;
     }
 
