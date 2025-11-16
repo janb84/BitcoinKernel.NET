@@ -22,7 +22,7 @@ public sealed class Block : IDisposable
     /// </summary>
     public static Block FromBytes(byte[] rawBlockData)
     {
-        ArgumentNullException.ThrowIfNull(rawBlockData,nameof(rawBlockData));
+        ArgumentNullException.ThrowIfNull(rawBlockData, nameof(rawBlockData));
         if (rawBlockData.Length == 0) throw new ArgumentException("Block data cannot be empty", nameof(rawBlockData));
 
         IntPtr blockPtr = NativeMethods.BlockCreate(rawBlockData, (UIntPtr)rawBlockData.Length);
@@ -101,7 +101,7 @@ public sealed class Block : IDisposable
     public Transaction? GetTransaction(int index)
     {
         ThrowIfDisposed();
-        
+
         if (index < 0 || index >= TransactionCount)
             return null;
 
@@ -119,7 +119,7 @@ public sealed class Block : IDisposable
     public IEnumerable<Transaction> GetTransactions()
     {
         ThrowIfDisposed();
-        
+
         int count = TransactionCount;
         for (int i = 0; i < count; i++)
         {

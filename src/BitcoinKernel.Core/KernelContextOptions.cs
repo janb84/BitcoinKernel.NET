@@ -33,19 +33,19 @@ public sealed class KernelContextOptions : IDisposable
     public KernelContextOptions SetChainParams(ChainParameters chainParams)
     {
         ThrowIfDisposed();
-        
+
         if (chainParams == null)
             throw new ArgumentNullException(nameof(chainParams));
-        
+
         var chainParamsHandle = chainParams.Handle;
         if (chainParamsHandle == IntPtr.Zero)
             throw new KernelException("Chain parameters handle is invalid (null)");
-        
+
         if (_handle == IntPtr.Zero)
             throw new KernelException("Context options handle is invalid (null)");
-        
+
         NativeMethods.ContextOptionsSetChainParams(_handle, chainParamsHandle);
-        
+
         return this;
     }
 

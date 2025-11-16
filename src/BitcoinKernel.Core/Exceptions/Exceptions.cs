@@ -8,10 +8,10 @@ namespace BitcoinKernel.Core.Exceptions;
 public class KernelException : Exception
 {
     public KernelException() : base() { }
-    
+
     public KernelException(string message) : base(message) { }
-    
-    public KernelException(string message, Exception innerException) 
+
+    public KernelException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -21,10 +21,10 @@ public class KernelException : Exception
 public class KernelContextException : KernelException
 {
     public KernelContextException() : base() { }
-    
+
     public KernelContextException(string message) : base(message) { }
-    
-    public KernelContextException(string message, Exception innerException) 
+
+    public KernelContextException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -34,20 +34,20 @@ public class KernelContextException : KernelException
 public class ScriptVerificationException : KernelException
 {
     public ScriptVerifyStatus Status { get; }
-    
-    public ScriptVerificationException(ScriptVerifyStatus status) 
+
+    public ScriptVerificationException(ScriptVerifyStatus status)
         : base($"Script verification failed with status: {status}")
     {
         Status = status;
     }
-    
-    public ScriptVerificationException(ScriptVerifyStatus status, string message) 
+
+    public ScriptVerificationException(ScriptVerifyStatus status, string message)
         : base(message)
     {
         Status = status;
     }
-    
-    public ScriptVerificationException(ScriptVerifyStatus status, string message, Exception innerException) 
+
+    public ScriptVerificationException(ScriptVerifyStatus status, string message, Exception innerException)
         : base(message, innerException)
     {
         Status = status;
@@ -61,22 +61,22 @@ public class BlockValidationException : KernelException
 {
     public BlockValidationResult Result { get; }
     public ValidationMode Mode { get; }
-    
-    public BlockValidationException(BlockValidationResult result, ValidationMode mode) 
+
+    public BlockValidationException(BlockValidationResult result, ValidationMode mode)
         : base($"Block validation failed: {result} (Mode: {mode})")
     {
         Result = result;
         Mode = mode;
     }
-    
-    public BlockValidationException(BlockValidationResult result, ValidationMode mode, string message) 
+
+    public BlockValidationException(BlockValidationResult result, ValidationMode mode, string message)
         : base(message)
     {
         Result = result;
         Mode = mode;
     }
-    
-    public BlockValidationException(BlockValidationResult result, ValidationMode mode, string message, Exception innerException) 
+
+    public BlockValidationException(BlockValidationResult result, ValidationMode mode, string message, Exception innerException)
         : base(message, innerException)
     {
         Result = result;
@@ -90,10 +90,10 @@ public class BlockValidationException : KernelException
 public class ChainstateManagerException : KernelException
 {
     public ChainstateManagerException() : base() { }
-    
+
     public ChainstateManagerException(string message) : base(message) { }
-    
-    public ChainstateManagerException(string message, Exception innerException) 
+
+    public ChainstateManagerException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -103,10 +103,10 @@ public class ChainstateManagerException : KernelException
 public class LoggingException : KernelException
 {
     public LoggingException() : base() { }
-    
+
     public LoggingException(string message) : base(message) { }
-    
-    public LoggingException(string message, Exception innerException) 
+
+    public LoggingException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -116,18 +116,18 @@ public class LoggingException : KernelException
 public class ChainParametersException : KernelException
 {
     public ChainType? ChainType { get; }
-    
+
     public ChainParametersException() : base() { }
-    
+
     public ChainParametersException(string message) : base(message) { }
-    
-    public ChainParametersException(ChainType chainType, string message) 
+
+    public ChainParametersException(ChainType chainType, string message)
         : base(message)
     {
         ChainType = chainType;
     }
-    
-    public ChainParametersException(string message, Exception innerException) 
+
+    public ChainParametersException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -138,11 +138,11 @@ public class ChainParametersException : KernelException
 public class KernelFatalException : KernelException
 {
     public KernelFatalException() : base() { }
-    
-    public KernelFatalException(string message) 
+
+    public KernelFatalException(string message)
         : base($"Fatal kernel error: {message}") { }
-    
-    public KernelFatalException(string message, Exception innerException) 
+
+    public KernelFatalException(string message, Exception innerException)
         : base($"Fatal kernel error: {message}", innerException) { }
 }
 
@@ -152,11 +152,11 @@ public class KernelFatalException : KernelException
 public class KernelFlushException : KernelException
 {
     public KernelFlushException() : base() { }
-    
-    public KernelFlushException(string message) 
+
+    public KernelFlushException(string message)
         : base($"Kernel flush error: {message}") { }
-    
-    public KernelFlushException(string message, Exception innerException) 
+
+    public KernelFlushException(string message, Exception innerException)
         : base($"Kernel flush error: {message}", innerException) { }
 }
 
@@ -166,10 +166,10 @@ public class KernelFlushException : KernelException
 public class TransactionException : KernelException
 {
     public TransactionException() : base() { }
-    
+
     public TransactionException(string message) : base(message) { }
-    
-    public TransactionException(string message, Exception innerException) 
+
+    public TransactionException(string message, Exception innerException)
         : base(message, innerException) { }
 }
 
@@ -179,9 +179,9 @@ public class TransactionException : KernelException
 public class BlockException : KernelException
 {
     public BlockException() : base() { }
-    
+
     public BlockException(string message) : base(message) { }
-    
-    public BlockException(string message, Exception innerException) 
+
+    public BlockException(string message, Exception innerException)
         : base(message, innerException) { }
 }

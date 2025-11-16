@@ -57,7 +57,7 @@ namespace BitcoinKernel.Core.Tests
             // Test iterator length decreases as we consume it
             var iter = block.GetTransactions().GetEnumerator();
             var initialLen = block.TransactionCount;
-            
+
             // Move to first element
             Assert.True(iter.MoveNext());
             // After consuming one element, we have initialLen - 1 remaining

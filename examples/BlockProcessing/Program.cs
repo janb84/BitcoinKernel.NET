@@ -62,7 +62,7 @@ namespace BlockProcessing
                         // Step 6: Get active chain information
                         var activeChain = kernel.Chainstate.GetActiveChain();
                         Console.WriteLine($"  - Active chain height: {activeChain.Height}");
-                        
+
                         var tip = activeChain.GetTip();
                         Console.WriteLine($"  - Active chain tip: {BitConverter.ToString(tip.GetBlockHash()).Replace("-", "")}");
                     }

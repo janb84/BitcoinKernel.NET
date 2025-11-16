@@ -35,7 +35,7 @@ public sealed class Chain
         //get chain by height
         IntPtr tipPtr = NativeMethods.ChainGetByHeight(_handle, Height);
         if (tipPtr == IntPtr.Zero)
-            throw new KernelException("Failed to get chain tip");  
+            throw new KernelException("Failed to get chain tip");
 
 
         return new BlockIndex(tipPtr, ownsHandle: false);

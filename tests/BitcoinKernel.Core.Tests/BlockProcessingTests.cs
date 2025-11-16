@@ -74,10 +74,10 @@ namespace BitcoinKernel.Core.Tests
         {
             var (context, chainParams, dataDir) = TestingSetup();
             var blockData = ReadBlockData();
-            
+
             var options = new ChainstateManagerOptions(context, dataDir, Path.Combine(dataDir, "blocks"));
             var chainstateManager = new ChainstateManager(context, chainParams, options);
-            
+
             return (chainstateManager, blockData);
         }
 
@@ -209,7 +209,7 @@ namespace BitcoinKernel.Core.Tests
             ProcessBlockData(chainstateManager, blockData);
 
             var activeChain = chainstateManager.GetActiveChain();
-            
+
             // Verify we can iterate through the chain by height
             for (int height = 0; height <= activeChain.Height; height++)
             {
@@ -247,19 +247,19 @@ namespace BitcoinKernel.Core.Tests
                     for (int coinIndex = 0; coinIndex < coinsCount; coinIndex++)
                     {
                         using var coin = txSpentOutputs.GetCoin(coinIndex);
-                        
+
                         // Verify coin properties
                         Assert.True(coin.ConfirmationHeight >= 0, "Confirmation height should be non-negative");
-                        
+
                         // We should be able to get the output
                         using var output = coin.GetOutput();
                         Assert.NotNull(output);
-                        
+
                         // Verify we can get the script pubkey from the output
                         var scriptPubkeyBytes = output.GetScriptPubkey();
                         Assert.NotNull(scriptPubkeyBytes);
                         Assert.True(scriptPubkeyBytes.Length >= 0, "Script pubkey should have valid length");
-                        
+
                         // Verify we can get the amount
                         var amount = output.Amount;
                         Assert.True(amount >= 0, "Amount should be non-negative");
@@ -272,7 +272,7 @@ namespace BitcoinKernel.Core.Tests
         public void TestChainOperations()
         {
             // Arrange - Setup test environment with blocks
-                        var setup = SetupChainstateManager();
+            var setup = SetupChainstateManager();
             using var chainstateManager = setup.Item1;
             var blockData = setup.Item2;
 
@@ -334,7 +334,7 @@ namespace BitcoinKernel.Core.Tests
         public void TestBlockSpentOutputsIterator()
         {
             // Arrange - Setup test environment with blocks
-                        var setup = SetupChainstateManager();
+            var setup = SetupChainstateManager();
             using var chainstateManager = setup.Item1;
             var blockData = setup.Item2;
 
@@ -364,7 +364,7 @@ namespace BitcoinKernel.Core.Tests
 
             // Test iterator length tracking
             var initialLen = spentOutputs.Count;
-            
+
             if (initialLen > 0)
             {
                 // After skipping one element, we have initialLen - 1 remaining
@@ -377,7 +377,7 @@ namespace BitcoinKernel.Core.Tests
         public void TestTransactionSpentOutputsIterator()
         {
             // Arrange - Setup test environment with blocks
-                        var setup = SetupChainstateManager();
+            var setup = SetupChainstateManager();
             using var chainstateManager = setup.Item1;
             var blockData = setup.Item2;
 
@@ -410,7 +410,7 @@ namespace BitcoinKernel.Core.Tests
 
             // Test iterator length tracking
             var initialLen = txSpent.Count;
-            
+
             if (initialLen > 0)
             {
                 // After skipping one element, we have initialLen - 1 remaining
@@ -420,7 +420,7 @@ namespace BitcoinKernel.Core.Tests
 
             // Test filtering coinbase coins
             var coinbaseCoins = txSpent.EnumerateCoins().Where(coin => coin.IsCoinbase).ToList();
-            
+
             foreach (var coin in coinbaseCoins)
             {
                 Assert.True(coin.IsCoinbase);
@@ -431,7 +431,7 @@ namespace BitcoinKernel.Core.Tests
         public void TestNestedIteration()
         {
             // Arrange - Setup test environment with blocks
-                        var setup = SetupChainstateManager();
+            var setup = SetupChainstateManager();
             using var chainstateManager = setup.Item1;
             var blockData = setup.Item2;
 
@@ -441,7 +441,7 @@ namespace BitcoinKernel.Core.Tests
             var activeChain = chainstateManager.GetActiveChain();
             var blockIndex = activeChain.GetBlockByHeight(1);
             Assert.NotNull(blockIndex);
-            
+
             using var spentOutputs = chainstateManager.ReadSpentOutputs(blockIndex);
 
             // Count total coins by nested iteration
@@ -465,7 +465,7 @@ namespace BitcoinKernel.Core.Tests
         public void TestIteratorWithBlockTransactions()
         {
             // Arrange - Setup test environment with blocks
-                        var setup = SetupChainstateManager();
+            var setup = SetupChainstateManager();
             using var chainstateManager = setup.Item1;
             var blockData = setup.Item2;
 
@@ -475,7 +475,7 @@ namespace BitcoinKernel.Core.Tests
             var activeChain = chainstateManager.GetActiveChain();
             var blockIndex = activeChain.GetBlockByHeight(1);
             Assert.NotNull(blockIndex);
-            
+
             // Use the block data we already have (index 1 corresponds to blockData[1])
             using var block = Abstractions.Block.FromBytes(blockData[1]);
             using var spentOutputs = chainstateManager.ReadSpentOutputs(blockIndex);
@@ -489,7 +489,7 @@ namespace BitcoinKernel.Core.Tests
                 Assert.Equal(tx.InputCount, txSpent.Count);
                 txIndex++;
             }
-            
+
             // Verify we processed all spent outputs
             Assert.Equal(spentOutputs.Count, txIndex);
         }

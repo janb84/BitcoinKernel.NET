@@ -105,7 +105,7 @@ public sealed class ChainstateManager : IDisposable
         {
             if (string.IsNullOrEmpty(blockFilePaths[i]))
                 throw new ArgumentException($"Block file path at index {i} cannot be null or empty", nameof(blockFilePaths));
-            
+
             stringLengths[i] = (nuint)System.Text.Encoding.UTF8.GetByteCount(blockFilePaths[i]);
         }
 
@@ -160,7 +160,7 @@ public sealed class ChainstateManager : IDisposable
             throw new ObjectDisposedException(nameof(ChainstateManager));
     }
 
-     public void Dispose()
+    public void Dispose()
     {
         if (!_disposed)
         {

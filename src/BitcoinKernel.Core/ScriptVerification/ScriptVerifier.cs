@@ -60,7 +60,7 @@ public static class ScriptVerifier
             ? spentOutputs.Select(utxo => utxo.Handle).ToArray()
             : null;
 
-        
+
 
         // Verify script
         // Allocate memory for status byte

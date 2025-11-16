@@ -122,7 +122,7 @@ namespace BitcoinKernel.Interop
             IntPtr manager,
             IntPtr block,
             ref int new_block);
-        
+
         /// <summary>
         /// Gets a block tree entry by its block hash.
         /// </summary>
@@ -227,19 +227,19 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr BlockRead(
             IntPtr chainstate_manager,
             IntPtr block_tree_entry);
-        
+
         /// <summary>
         /// Gets the number of transactions in a block.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_count_transactions")]
         public static extern nuint BlockCountTransactions(IntPtr block);
-        
+
         /// <summary>
         /// Gets the block hash.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_hash")]
         public static extern IntPtr BlockGetHash(IntPtr block);
-        
+
         /// <summary>
         /// Serializes the block to bytes.
         /// </summary>
@@ -248,7 +248,7 @@ namespace BitcoinKernel.Interop
             IntPtr block,
             WriteBytes writer,
             IntPtr user_data);
-        
+
         /// <summary>
         /// Delegate for writing bytes during serialization.
         /// </summary>
@@ -266,7 +266,7 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_height")]
         public static extern int BlockTreeEntryGetHeight(IntPtr block_tree_entry);
-        
+
         /// <summary>
         /// Gets the previous block tree entry from a block tree entry.
         /// </summary>
@@ -284,19 +284,19 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_hash_create")]
         public static extern IntPtr BlockHashCreate(IntPtr hash);
-        
+
         /// <summary>
         /// Creates a block hash from 32 bytes (unsafe version).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_hash_create")]
         public static extern unsafe IntPtr BlockHashCreate(byte* hash);
-        
+
         /// <summary>
         /// Serializes the block hash to bytes (32 bytes).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_hash_to_bytes")]
         public static extern void BlockHashToBytes(IntPtr block_hash, [MarshalAs(UnmanagedType.LPArray, SizeConst = 32)] byte[] output);
-        
+
         /// <summary>
         /// Destroys a block hash.
         /// </summary>
@@ -324,13 +324,13 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_create")]
         public static extern IntPtr TransactionCreate(IntPtr raw_transaction, nuint raw_transaction_len);
-        
+
         /// <summary>
         /// Copies a transaction (reference counted).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_copy")]
         public static extern IntPtr TransactionCopy(IntPtr transaction);
-        
+
         /// <summary>
         /// Serializes a transaction to bytes.
         /// </summary>
@@ -364,13 +364,13 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_get_output_at")]
         public static extern IntPtr TransactionGetOutputAt(IntPtr transaction, nuint index);
-        
+
         /// <summary>
         /// Gets a transaction input at the specified index.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_get_input_at")]
         public static extern IntPtr TransactionGetInputAt(IntPtr transaction, nuint index);
-        
+
         /// <summary>
         /// Destroys a transaction.
         /// </summary>
@@ -389,13 +389,13 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_output_get_amount")]
         public static extern long TransactionOutputGetAmount(IntPtr output);
-        
+
         /// <summary>
         /// Copy a transaction output.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_output_copy")]
         public static extern IntPtr TransactionOutputCopy(IntPtr output);
-        
+
         /// <summary>
         /// Destroys a transaction output.
         /// </summary>
@@ -431,7 +431,7 @@ namespace BitcoinKernel.Interop
             nuint spent_outputs_len,
             uint input_index,
             uint flags,
-            IntPtr status); 
+            IntPtr status);
 
         /// <summary>
         /// Serializes a script pubkey to bytes.
@@ -449,9 +449,9 @@ namespace BitcoinKernel.Interop
         public static extern void ScriptPubkeyDestroy(IntPtr script_pubkey);
 
         #endregion
-        
+
         #region TransactionOutput Operations (Additional)
-        
+
         /// <summary>
         /// Creates a transaction output from a script pubkey and amount.
         /// </summary>
@@ -500,7 +500,7 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_logging_enable_category")]
         public static extern void LoggingEnableCategory(LogCategory category);
-        
+
         /// <summary>
         /// Disables a log category.
         /// </summary>
@@ -526,104 +526,104 @@ namespace BitcoinKernel.Interop
         #endregion
 
         #region Txid Operations
-        
+
         /// <summary>
         /// Copies a txid.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_txid_copy")]
         public static extern IntPtr TxidCopy(IntPtr txid);
-        
+
         /// <summary>
         /// Checks if two txids are equal.
         /// Returns 1 if equal, 0 otherwise.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_txid_equals")]
         public static extern int TxidEquals(IntPtr txid1, IntPtr txid2);
-        
+
         /// <summary>
         /// Serializes a txid to bytes (32 bytes).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_txid_to_bytes")]
         public static extern void TxidToBytes(IntPtr txid, [MarshalAs(UnmanagedType.LPArray, SizeConst = 32)] byte[] output);
-        
+
         /// <summary>
         /// Destroys a txid.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_txid_destroy")]
         public static extern void TxidDestroy(IntPtr txid);
-        
+
         #endregion
-        
+
         #region Coin Operations
-        
+
         /// <summary>
         /// Copies a coin.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_coin_copy")]
         public static extern IntPtr CoinCopy(IntPtr coin);
-        
+
         /// <summary>
         /// Returns the block height where the transaction that created this coin was included.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_coin_confirmation_height")]
         public static extern uint CoinConfirmationHeight(IntPtr coin);
-        
+
         /// <summary>
         /// Returns whether the containing transaction was a coinbase.
         /// Returns 1 if coinbase, 0 otherwise.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_coin_is_coinbase")]
         public static extern int CoinIsCoinbase(IntPtr coin);
-        
+
         /// <summary>
         /// Gets the transaction output of a coin.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_coin_get_output")]
         public static extern IntPtr CoinGetOutput(IntPtr coin);
-        
+
         /// <summary>
         /// Destroys a coin.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_coin_destroy")]
         public static extern void CoinDestroy(IntPtr coin);
-        
+
         #endregion
-        
+
         #region Block Operations (Additional)
-        
+
         /// <summary>
         /// Copies a block (reference counted).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_copy")]
         public static extern IntPtr BlockCopy(IntPtr block);
-        
+
         /// <summary>
         /// Gets a transaction at the specified index in a block.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_transaction_at")]
         public static extern IntPtr BlockGetTransactionAt(IntPtr block, nuint index);
-        
+
         #endregion
-        
+
         #region Chain Operations (Additional)
-        
+
         /// <summary>
         /// Gets a block tree entry by height.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_by_height")]
         public static extern IntPtr ChainGetByHeight(IntPtr chain, int height);
-        
+
         /// <summary>
         /// Checks if a block tree entry is in the chain.
         /// Returns 1 if in chain, 0 otherwise.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_contains")]
         public static extern int ChainContains(IntPtr chain, IntPtr block_tree_entry);
-        
+
         #endregion
-        
+
         #region BlockSpentOutputs Operations
-        
+
         /// <summary>
         /// Reads block spent outputs (undo data) from disk.
         /// </summary>
@@ -631,19 +631,19 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr BlockSpentOutputsRead(
             IntPtr chainstate_manager,
             IntPtr block_tree_entry);
-        
+
         /// <summary>
         /// Copies block spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_spent_outputs_copy")]
         public static extern IntPtr BlockSpentOutputsCopy(IntPtr block_spent_outputs);
-        
+
         /// <summary>
         /// Gets the count of transaction spent outputs in block spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_spent_outputs_count")]
         public static extern nuint BlockSpentOutputsCount(IntPtr block_spent_outputs);
-        
+
         /// <summary>
         /// Gets transaction spent outputs at the specified index.
         /// </summary>
@@ -651,29 +651,29 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr BlockSpentOutputsGetTransactionSpentOutputsAt(
             IntPtr block_spent_outputs,
             nuint index);
-        
+
         /// <summary>
         /// Destroys block spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_spent_outputs_destroy")]
         public static extern void BlockSpentOutputsDestroy(IntPtr block_spent_outputs);
-        
+
         #endregion
-        
+
         #region TransactionSpentOutputs Operations
-        
+
         /// <summary>
         /// Copies transaction spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_spent_outputs_copy")]
         public static extern IntPtr TransactionSpentOutputsCopy(IntPtr transaction_spent_outputs);
-        
+
         /// <summary>
         /// Gets the count of coins in transaction spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_spent_outputs_count")]
         public static extern nuint TransactionSpentOutputsCount(IntPtr transaction_spent_outputs);
-        
+
         /// <summary>
         /// Gets a coin at the specified index.
         /// </summary>
@@ -681,36 +681,36 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr TransactionSpentOutputsGetCoinAt(
             IntPtr transaction_spent_outputs,
             nuint index);
-        
+
         /// <summary>
         /// Destroys transaction spent outputs.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_spent_outputs_destroy")]
         public static extern void TransactionSpentOutputsDestroy(IntPtr transaction_spent_outputs);
-        
+
         #endregion
 
         #region Missing Functions
-        
+
         /// <summary>
         /// Copy a context.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_context_copy")]
         public static extern IntPtr ContextCopy(IntPtr context);
-        
+
         /// <summary>
         /// Copy chain parameters.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_parameters_copy")]
         public static extern IntPtr ChainParametersCopy(IntPtr chain_params);
-        
+
         /// <summary>
         /// Checks if two block hashes are equal.
         /// Returns 1 if equal, 0 otherwise.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_hash_equals")]
         public static extern int BlockHashEquals(IntPtr hash1, IntPtr hash2);
-        
+
         /// <summary>
         /// Copy a block hash.
         /// </summary>
@@ -718,55 +718,55 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr BlockHashCopy(IntPtr block_hash);
 
         #endregion
-        
+
         #region TransactionInput Operations
-        
+
         /// <summary>
         /// Copies a transaction input.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_copy")]
         public static extern IntPtr TransactionInputCopy(IntPtr transaction_input);
-        
+
         /// <summary>
         /// Gets the transaction out point from a transaction input.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_out_point")]
         public static extern IntPtr TransactionInputGetOutPoint(IntPtr transaction_input);
-        
+
         /// <summary>
         /// Destroys a transaction input.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_destroy")]
         public static extern void TransactionInputDestroy(IntPtr transaction_input);
-        
+
         #endregion
-        
+
         #region TransactionOutPoint Operations
-        
+
         /// <summary>
         /// Copies a transaction out point.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_out_point_copy")]
         public static extern IntPtr TransactionOutPointCopy(IntPtr transaction_out_point);
-        
+
         /// <summary>
         /// Gets the output index from a transaction out point.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_out_point_get_index")]
         public static extern uint TransactionOutPointGetIndex(IntPtr transaction_out_point);
-        
+
         /// <summary>
         /// Gets the txid from a transaction out point.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_out_point_get_txid")]
         public static extern IntPtr TransactionOutPointGetTxid(IntPtr transaction_out_point);
-        
+
         /// <summary>
         /// Destroys a transaction out point.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_out_point_destroy")]
         public static extern void TransactionOutPointDestroy(IntPtr transaction_out_point);
-        
+
         #endregion
 
     }

@@ -43,7 +43,7 @@ namespace BitcoinKernel.Core.Abstractions
         public TransactionSpentOutputs GetTransactionSpentOutputs(int transactionIndex)
         {
             ThrowIfDisposed();
-            
+
             if (transactionIndex < 0 || transactionIndex >= Count)
             {
                 throw new ArgumentOutOfRangeException(nameof(transactionIndex));
@@ -51,7 +51,7 @@ namespace BitcoinKernel.Core.Abstractions
 
             var txSpentOutputsPtr = NativeMethods.BlockSpentOutputsGetTransactionSpentOutputsAt(
                 _handle, (nuint)transactionIndex);
-            
+
             if (txSpentOutputsPtr == IntPtr.Zero)
             {
                 throw new InvalidOperationException($"Failed to get transaction spent outputs at index {transactionIndex}");
@@ -68,7 +68,7 @@ namespace BitcoinKernel.Core.Abstractions
         public IEnumerable<TransactionSpentOutputs> EnumerateTransactionSpentOutputs()
         {
             ThrowIfDisposed();
-            
+
             int count = Count;
             for (int i = 0; i < count; i++)
             {

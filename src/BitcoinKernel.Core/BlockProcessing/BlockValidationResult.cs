@@ -36,5 +36,5 @@ public sealed class BlockValidationResult
         Mode = mode;
         ErrorCode = errorCode;
         ErrorMessage = errorMessage;
-    }   
+    }
 }

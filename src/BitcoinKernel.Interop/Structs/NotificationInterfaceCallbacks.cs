@@ -15,4 +15,4 @@ namespace BitcoinKernel.Interop.Structs
         public NotifyFlushError FlushError;
         public NotifyFatalError FatalError;
     }
-}   
+}

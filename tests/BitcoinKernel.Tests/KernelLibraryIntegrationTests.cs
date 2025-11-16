@@ -152,7 +152,7 @@ namespace BitcoinKernel.Tests
             // Assert
             // Chainstate should be automatically initialized by the builder
             Assert.NotNull(Kernel.Chainstate);
-            
+
             // Should be able to query chain information immediately
             int height = Kernel.GetChainHeight();
             Assert.True(height >= 0);
@@ -294,7 +294,7 @@ namespace BitcoinKernel.Tests
             byte[] tooSmallBlockData = new byte[40]; // Too small
             bool isTooSmallValid = Kernel.ValidateBlock(tooSmallBlockData);
             Assert.False(isTooSmallValid);
-            
+
             // Test null block data
             bool isNullValid = Kernel.ValidateBlock((byte[])null!);
             Assert.False(isNullValid);
@@ -318,13 +318,13 @@ namespace BitcoinKernel.Tests
             // Assert
             Assert.NotNull(result);
             Assert.False(result.IsValid);
-            
+
             // Test with too small block data
             byte[] tooSmallData = new byte[40];
             var smallResult = Kernel.ValidateBlockDetailed(tooSmallData);
             Assert.False(smallResult.IsValid);
             Assert.Contains("too small", smallResult.ErrorMessage ?? "", StringComparison.OrdinalIgnoreCase);
-            
+
             // Test with null data
             var nullResult = Kernel.ValidateBlockDetailed((byte[])null!);
             Assert.False(nullResult.IsValid);

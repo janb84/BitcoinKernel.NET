@@ -58,7 +58,7 @@ public class TransactionSpentOutputs : IDisposable
     public IEnumerable<Coin> EnumerateCoins()
     {
         ThrowIfDisposed();
-        
+
         int count = Count;
         for (int i = 0; i < count; i++)
         {
