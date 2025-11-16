@@ -315,13 +315,6 @@ namespace BitcoinKernel.Interop
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_height")]
         public static extern int ChainGetHeight(IntPtr chain);
 
-        /// <summary>
-        /// Gets a block tree entry by height (use ChainGetByHeight instead).
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_block_index_by_height")]
-        [Obsolete("Use ChainGetByHeight instead")]
-        public static extern IntPtr ChainGetBlockIndexByHeight(IntPtr chain, int height);
-
         #endregion
 
         #region Transaction Operations
