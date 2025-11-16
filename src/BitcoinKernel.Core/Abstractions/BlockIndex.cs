@@ -37,13 +37,7 @@ public sealed class BlockIndex
         // The hash pointer is owned by the block tree entry, so we just read the bytes
         // without wrapping it in a BlockHash that would try to destroy it
         var bytes = new byte[32];
-        unsafe
-        {
-            fixed (byte* ptr = bytes)
-            {
-                NativeMethods.BlockHashToBytes(hashPtr, ptr);
-            }
-        }
+        NativeMethods.BlockHashToBytes(hashPtr, bytes);
         return bytes;
     }
 

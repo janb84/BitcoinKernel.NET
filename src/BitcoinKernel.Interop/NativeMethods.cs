@@ -121,7 +121,7 @@ namespace BitcoinKernel.Interop
         public static extern int ChainstateManagerProcessBlock(
             IntPtr manager,
             IntPtr block,
-            out int new_block);
+            ref int new_block);
         
         /// <summary>
         /// Gets a block tree entry by its block hash.
@@ -144,7 +144,7 @@ namespace BitcoinKernel.Interop
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_import_blocks")]
         public static extern int ChainstateManagerImportBlocks(
             IntPtr manager,
-            IntPtr[] block_file_paths_data,
+            [MarshalAs(UnmanagedType.LPArray)] string[] block_file_paths_data,
             nuint[] block_file_paths_lens,
             nuint block_file_paths_data_len);
 
@@ -266,12 +266,14 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_height")]
         public static extern int BlockTreeEntryGetHeight(IntPtr block_tree_entry);
-
+        
         /// <summary>
-        /// Gets the previous block tree entry.
+        /// Gets the previous block tree entry from a block tree entry.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_previous")]
         public static extern IntPtr BlockTreeEntryGetPrevious(IntPtr block_tree_entry);
+
+
 
         #endregion
 
@@ -290,10 +292,10 @@ namespace BitcoinKernel.Interop
         public static extern unsafe IntPtr BlockHashCreate(byte* hash);
         
         /// <summary>
-        /// Copies block hash to byte array.
+        /// Serializes the block hash to bytes (32 bytes).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_hash_to_bytes")]
-        public static extern unsafe void BlockHashToBytes(IntPtr block_hash, byte* hash);
+        public static extern void BlockHashToBytes(IntPtr block_hash, [MarshalAs(UnmanagedType.LPArray, SizeConst = 32)] byte[] output);
         
         /// <summary>
         /// Destroys a block hash.
@@ -312,12 +314,6 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_height")]
         public static extern int ChainGetHeight(IntPtr chain);
-
-        /// <summary>
-        /// Gets the tip of the chain.
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_tip")]
-        public static extern IntPtr ChainGetTip(IntPtr chain);
 
         /// <summary>
         /// Gets a block tree entry by height (use ChainGetByHeight instead).
@@ -555,7 +551,7 @@ namespace BitcoinKernel.Interop
         /// Serializes a txid to bytes (32 bytes).
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_txid_to_bytes")]
-        public static extern unsafe void TxidToBytes(IntPtr txid, byte* output);
+        public static extern void TxidToBytes(IntPtr txid, [MarshalAs(UnmanagedType.LPArray, SizeConst = 32)] byte[] output);
         
         /// <summary>
         /// Destroys a txid.
@@ -617,12 +613,6 @@ namespace BitcoinKernel.Interop
         #endregion
         
         #region Chain Operations (Additional)
-        
-        /// <summary>
-        /// Gets the genesis block tree entry.
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_genesis")]
-        public static extern IntPtr ChainGetGenesis(IntPtr chain);
         
         /// <summary>
         /// Gets a block tree entry by height.

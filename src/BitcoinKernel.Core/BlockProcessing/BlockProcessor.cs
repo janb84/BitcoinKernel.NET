@@ -38,7 +38,7 @@ public sealed class BlockProcessor
         int result = NativeMethods.ChainstateManagerProcessBlock(
             _chainstateManager.Handle,
             block.Handle,
-            out newBlock);
+            ref newBlock);
 
         if (result != 0)
         {
@@ -82,7 +82,7 @@ public sealed class BlockProcessor
             int result = NativeMethods.ChainstateManagerProcessBlock(
                 _chainstateManager.Handle,
                 block.Handle,
-                out newBlock);
+                ref newBlock);
 
             if (result == 0)
             {
