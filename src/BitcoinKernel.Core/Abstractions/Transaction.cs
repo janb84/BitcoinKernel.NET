@@ -1,6 +1,7 @@
 using System;
 using System.Runtime.InteropServices;
 using BitcoinKernel.Core.Exceptions;
+using BitcoinKernel.Core.TransactionValidation;
 using BitcoinKernel.Interop;
 
 namespace BitcoinKernel.Core.Abstractions;
@@ -156,6 +157,24 @@ public sealed class Transaction : IDisposable
             throw new TransactionException("Failed to copy transaction");
 
         return new Transaction(copyHandle);
+    }
+
+    /// <summary>
+    /// Validates this transaction against consensus rules.
+    /// </summary>
+    /// <returns>A TxValidationState containing the validation result.</returns>
+    public TxValidationState Validate()
+    {
+        return TransactionValidator.CheckTransaction(this);
+    }
+
+    /// <summary>
+    /// Checks if this transaction is valid according to consensus rules.
+    /// </summary>
+    /// <returns>True if the transaction is valid, false otherwise.</returns>
+    public bool IsValid()
+    {
+        return TransactionValidator.IsValid(this);
     }
 
     internal IntPtr Handle => _handle;
