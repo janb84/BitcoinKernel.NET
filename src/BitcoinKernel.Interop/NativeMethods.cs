@@ -378,6 +378,13 @@ namespace BitcoinKernel.Interop
         public static extern void TransactionDestroy(IntPtr transaction);
 
         /// <summary>
+        /// Run consensus/tx_check::CheckTransaction on a transaction and return the filled state.
+        /// Returns 1 if valid, 0 if invalid.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_check_transaction")]
+        public static extern int CheckTransaction(IntPtr tx, out IntPtr out_state);
+
+        /// <summary>
         /// Gets the script pubkey from a transaction output.
         /// Returns a pointer to btck_ScriptPubkey.
         /// </summary>
@@ -401,6 +408,28 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_output_destroy")]
         public static extern void TransactionOutputDestroy(IntPtr output);
+
+        #endregion
+
+        #region TxValidationState Operations
+
+        /// <summary>
+        /// Gets the validation mode from a transaction validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_get_validation_mode")]
+        public static extern ValidationMode TxValidationStateGetValidationMode(IntPtr state);
+
+        /// <summary>
+        /// Gets the transaction validation result from a transaction validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_get_tx_validation_result")]
+        public static extern TxValidationResult TxValidationStateGetTxValidationResult(IntPtr state);
+
+        /// <summary>
+        /// Destroys a transaction validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_destroy")]
+        public static extern void TxValidationStateDestroy(IntPtr state);
 
         #endregion
 
