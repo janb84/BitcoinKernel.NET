@@ -31,18 +31,18 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore
 
-    - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal --logger "trx;LogFileName=test-results.trx"
+    - name: Test with dotnet
+      run: dotnet test --no-restore --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
 
-    - name: Upload test results
+    - name: Upload dotnet test results
       uses: actions/upload-artifact@v4
-      if: always()
       with:
-        name: test-results-${{ matrix.os }}
-        path: '**/TestResults/*.trx'
+        name: dotnet-results-${{ matrix.dotnet-version }}
+        path: TestResults-${{ matrix.dotnet-version }}
+      if: ${{ always() }}
 
   lint:
-    name: Lint and Format Check
+    name: Lint/Format Check
     runs-on: ubuntu-latest
 
     steps:
@@ -60,9 +60,6 @@ jobs:
     - name: Check formatting
       run: dotnet format --verify-no-changes --verbosity diagnostic
 
-    - name: Run code analysis
-      run: dotnet build --configuration Release /p:TreatWarningsAsErrors=false
-
   security:
     name: Security Scan
     runs-on: ubuntu-latest
@@ -79,5 +76,8 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Check for vulnerable packages
-      run: dotnet list package --vulnerable --include-transitive
+    - name: Checking for external vulnerabilites
+      run: |
+        dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln.log
+        echo "Analyze dotnet list package..."
+        ! grep -q -i "has the following vulnerable packages" vuln.log
