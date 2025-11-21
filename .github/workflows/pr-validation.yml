@@ -33,21 +33,4 @@ jobs:
       run: dotnet test --configuration Release --no-build --verbosity normal
 
     - name: Check formatting
-      run: dotnet format --verify-no-changes || echo "Code formatting issues detected. Run 'dotnet format' locally."
-
-    - name: PR title validation
-      uses: amannn/action-semantic-pull-request@v5
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        types: |
-          feat
-          fix
-          docs
-          style
-          refactor
-          perf
-          test
-          build
-          ci
-          chore
+      run: dotnet format style --no-restore --verify-no-changes
