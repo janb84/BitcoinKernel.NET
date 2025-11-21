@@ -427,7 +427,7 @@ namespace BitcoinKernel.Interop
             IntPtr script_pubkey,
             long amount,
             IntPtr tx_to,
-            IntPtr[] spent_outputs,
+            IntPtr[]? spent_outputs,
             nuint spent_outputs_len,
             uint input_index,
             uint flags,
