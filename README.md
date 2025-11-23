@@ -1,6 +1,8 @@
 # BitcoinKernel.NET
 
 .NET bindings and high-level library for [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/master/src/kernel), providing access to Bitcoin Core's consensus and validation logic.
+
+
 ⚠️🚧 This library is still under contruction. ⚠️🚧
 
 This library uses [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/master/src/kernel) which is in an experimental state, do not use for production purposes.  
@@ -67,6 +69,19 @@ Explore the [examples](examples/) directory for complete working samples:
 
 - **[BasicUsage](examples/BasicUsage/)** - Getting started with the high-level API
 - **[BlockProcessing](examples/BlockProcessing/)** - Block validation and chain management
+
+## Tools
+
+### Kernel Bindings Test Handler
+
+A conformance test handler for Kernel bindings Test handler framework, see [tools/kernel-bindings-test-handler](tools/kernel-bindings-test-handler/) for details.
+
+**Usage:**
+```bash
+dotnet run --project tools/kernel-bindings-test-handler
+```
+
+The handler communicates via stdin/stdout and is designed for automated conformance testing.
 
 ## Building from Source
 
