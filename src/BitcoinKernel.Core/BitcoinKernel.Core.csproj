@@ -8,7 +8,7 @@
     
     <!-- NuGet Package Metadata -->
     <PackageId>BitcoinKernel.Core</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.1.1</Version>
     <Authors>JanB84</Authors>
     <Description>.NET bindings and managed wrappers for libbitcoinkernel. Provides direct access to Bitcoin Core consensus and validation logic with automatic memory management.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

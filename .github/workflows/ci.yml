@@ -81,3 +81,50 @@ jobs:
         dotnet list package --vulnerable --include-transitive 2>&1 | tee vuln.log
         echo "Analyze dotnet list package..."
         ! grep -q -i "has the following vulnerable packages" vuln.log
+
+  conformance-tests:
+    name: Conformance Tests
+    runs-on: ${{ matrix.os }}
+    needs: build-and-test
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            platform: darwin_arm64
+          - os: ubuntu-latest
+            platform: linux_amd64
+
+    env:
+      TEST_VERSION: '0.0.1'
+      TEST_REPO: 'stringintech/kernel-bindings-tests'
+      TEST_DIR: '.conformance-tests'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v5
+      with:
+        dotnet-version: '9.0.x'
+
+    - name: Build conformance handler
+      run: |
+        dotnet build tools/kernel-bindings-test-handler/kernel-bindings-test-handler.csproj -c Release
+        dotnet publish tools/kernel-bindings-test-handler/kernel-bindings-test-handler.csproj -c Release -o handler-bin
+
+    - name: Download test runner
+      run: |
+        mkdir -p ${{ env.TEST_DIR }}
+        DOWNLOAD_URL="https://github.com/${{ env.TEST_REPO }}/releases/download/v${{ env.TEST_VERSION }}/kernel-bindings-tests_${{ env.TEST_VERSION }}_${{ matrix.platform }}.tar.gz"
+        echo "Downloading from: $DOWNLOAD_URL"
+        curl --fail -L -o ${{ env.TEST_DIR }}/test-runner.tar.gz "$DOWNLOAD_URL"
+        tar -xzf ${{ env.TEST_DIR }}/test-runner.tar.gz -C ${{ env.TEST_DIR }}
+        chmod +x ${{ env.TEST_DIR }}/runner
+
+    - name: Run conformance tests
+      run: |
+        ${{ env.TEST_DIR }}/runner --handler handler-bin/kernel-bindings-test-handler
+
+
