@@ -15,8 +15,8 @@ BitcoinKernel.NET brings Bitcoin Core's robust consensus engine to .NET applicat
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| **BitcoinKernel** | 0.1.0 | High-level API with fluent builder pattern |
-| **BitcoinKernel.Core** | 0.1.0 | Managed wrappers and native bindings |
+| **BitcoinKernel** | 0.1.1 | High-level API with fluent builder pattern |
+| **BitcoinKernel.Core** | 0.1.1 | Managed wrappers and native bindings |
 
 
 ## Quick Start
