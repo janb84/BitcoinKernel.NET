@@ -85,6 +85,7 @@ jobs:
   conformance-tests:
     name: Conformance Tests
     runs-on: ${{ matrix.os }}
+    needs: build-and-test
     strategy:
       fail-fast: false
       matrix:
