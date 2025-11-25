@@ -273,7 +273,13 @@ namespace BitcoinKernel.Interop
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_previous")]
         public static extern IntPtr BlockTreeEntryGetPrevious(IntPtr block_tree_entry);
 
-
+        /// <summary>
+        /// Checks if two block tree entries are equal. Two block tree entries are equal when they
+        /// point to the same block.
+        /// Returns 1 if equal, 0 otherwise.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_equals")]
+        public static extern int BlockTreeEntryEquals(IntPtr entry1, IntPtr entry2);
 
         #endregion
 
