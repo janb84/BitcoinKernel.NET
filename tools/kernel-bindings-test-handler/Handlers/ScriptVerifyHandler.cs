@@ -22,7 +22,7 @@ public class ScriptVerifyHandler
     /// <summary>
     /// Handles a script verification request.
     /// </summary>
-    public Response Handle(string requestId, ScriptVerifyParams parameters)
+    public Response Handle(string requestId, BtckScriptPubkeyVerifyParams parameters)
     {
         try
         {
@@ -37,7 +37,7 @@ public class ScriptVerifyHandler
                 foreach (var output in parameters.SpentOutputs)
                 {
                     var outputScriptPubKey = ScriptPubKey.FromHex(output.ScriptPubKeyHex);
-                    spentOutputs.Add(new TxOut(outputScriptPubKey, output.Amount));
+                    spentOutputs.Add(new TxOut(outputScriptPubKey, output.Value));
                 }
             }
 
@@ -58,7 +58,7 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
-                Success = new { }
+                Success = true
             };
         }
         catch (ArgumentOutOfRangeException ex) when (ex.ParamName == "inputIndex")
@@ -66,10 +66,14 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
+                Success = false,
                 Error = new ErrorResponse
                 {
-                    Type = "ScriptVerify",
-                    Variant = "TxInputIndex"
+                    Code = new ErrorCode
+                    {
+                        Type = "btck_ScriptVerifyStatus",
+                        Member = "TxInputIndex"
+                    }
                 }
             };
         }
@@ -78,10 +82,14 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
+                Success = false,
                 Error = new ErrorResponse
                 {
-                    Type = "ScriptVerify",
-                    Variant = MapScriptVerifyStatus(ex.Status)
+                    Code = new ErrorCode
+                    {
+                        Type = "btck_ScriptVerifyStatus",
+                        Member = MapScriptVerifyStatus(ex.Status)
+                    }
                 }
             };
         }
@@ -101,10 +109,14 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
+                Success = false,
                 Error = new ErrorResponse
                 {
-                    Type = "ScriptVerify",
-                    Variant = "Invalid"
+                    Code = new ErrorCode
+                    {
+                        Type = "btck_ScriptVerifyStatus",
+                        Member = "Invalid"
+                    }
                 }
             };
         }
@@ -132,9 +144,18 @@ public class ScriptVerifyHandler
             {
                 return (ScriptVerificationFlags)jsonElement.GetUInt32();
             }
-            else if (jsonElement.ValueKind == System.Text.Json.JsonValueKind.String)
+            else if (jsonElement.ValueKind == System.Text.Json.JsonValueKind.Array)
             {
-                return ParseFlagString(jsonElement.GetString() ?? string.Empty);
+                // Handle array of string flags - combine them with OR
+                ScriptVerificationFlags combinedFlags = ScriptVerificationFlags.None;
+                foreach (var element in jsonElement.EnumerateArray())
+                {
+                    if (element.ValueKind == System.Text.Json.JsonValueKind.String)
+                    {
+                        combinedFlags |= ParseFlagString(element.GetString() ?? string.Empty);
+                    }
+                }
+                return combinedFlags;
             }
         }
 
@@ -152,18 +173,35 @@ public class ScriptVerifyHandler
     /// </summary>
     private ScriptVerificationFlags ParseFlagString(string flagStr)
     {
+        // Handle btck_ prefixed format (e.g., "btck_ScriptVerificationFlags_WITNESS")
+        if (flagStr.StartsWith("btck_ScriptVerificationFlags_", StringComparison.OrdinalIgnoreCase))
+        {
+            flagStr = flagStr.Substring("btck_ScriptVerificationFlags_".Length);
+        }
+
         return flagStr.ToUpperInvariant() switch
         {
-            "VERIFY_NONE" or "NONE" => ScriptVerificationFlags.None,
-            "VERIFY_P2SH" or "P2SH" => ScriptVerificationFlags.P2SH,
-            "VERIFY_DERSIG" or "DERSIG" => ScriptVerificationFlags.DerSig,
-            "VERIFY_NULLDUMMY" or "NULLDUMMY" => ScriptVerificationFlags.NullDummy,
-            "VERIFY_CHECKLOCKTIMEVERIFY" or "CHECKLOCKTIMEVERIFY" => ScriptVerificationFlags.CheckLockTimeVerify,
-            "VERIFY_CHECKSEQUENCEVERIFY" or "CHECKSEQUENCEVERIFY" => ScriptVerificationFlags.CheckSequenceVerify,
-            "VERIFY_WITNESS" or "WITNESS" => ScriptVerificationFlags.Witness,
-            "VERIFY_TAPROOT" or "TAPROOT" => ScriptVerificationFlags.Taproot,
-            "VERIFY_ALL" or "ALL" => ScriptVerificationFlags.All,
-            "VERIFY_ALL_PRE_TAPROOT" or "ALL_PRE_TAPROOT" => ScriptVerificationFlags.AllPreTaproot,
+            "NONE" => ScriptVerificationFlags.None,
+            "P2SH" => ScriptVerificationFlags.P2SH,
+            "DERSIG" => ScriptVerificationFlags.DerSig,
+            "NULLDUMMY" => ScriptVerificationFlags.NullDummy,
+            "CHECKLOCKTIMEVERIFY" => ScriptVerificationFlags.CheckLockTimeVerify,
+            "CHECKSEQUENCEVERIFY" => ScriptVerificationFlags.CheckSequenceVerify,
+            "WITNESS" => ScriptVerificationFlags.Witness,
+            "TAPROOT" => ScriptVerificationFlags.Taproot,
+            "ALL" => ScriptVerificationFlags.All,
+            "ALL_PRE_TAPROOT" => ScriptVerificationFlags.AllPreTaproot,
+            // Legacy format support
+            "VERIFY_NONE" => ScriptVerificationFlags.None,
+            "VERIFY_P2SH" => ScriptVerificationFlags.P2SH,
+            "VERIFY_DERSIG" => ScriptVerificationFlags.DerSig,
+            "VERIFY_NULLDUMMY" => ScriptVerificationFlags.NullDummy,
+            "VERIFY_CHECKLOCKTIMEVERIFY" => ScriptVerificationFlags.CheckLockTimeVerify,
+            "VERIFY_CHECKSEQUENCEVERIFY" => ScriptVerificationFlags.CheckSequenceVerify,
+            "VERIFY_WITNESS" => ScriptVerificationFlags.Witness,
+            "VERIFY_TAPROOT" => ScriptVerificationFlags.Taproot,
+            "VERIFY_ALL" => ScriptVerificationFlags.All,
+            "VERIFY_ALL_PRE_TAPROOT" => ScriptVerificationFlags.AllPreTaproot,
             _ => throw new ArgumentException($"Unknown flag: {flagStr}")
         };
     }
@@ -175,12 +213,12 @@ public class ScriptVerifyHandler
     {
         return status switch
         {
-            ScriptVerifyStatus.ERROR_TX_INPUT_INDEX => "TxInputIndex",
-            ScriptVerifyStatus.ERROR_INVALID_FLAGS => "InvalidFlags",
-            ScriptVerifyStatus.ERROR_INVALID_FLAGS_COMBINATION => "InvalidFlagsCombination",
-            ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_MISMATCH => "SpentOutputsMismatch",
-            ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_REQUIRED => "SpentOutputsRequired",
-            _ => "Invalid"
+            ScriptVerifyStatus.ERROR_TX_INPUT_INDEX => "ERROR_TX_INPUT_INDEX",
+            ScriptVerifyStatus.ERROR_INVALID_FLAGS => "ERROR_INVALID_FLAGS",
+            ScriptVerifyStatus.ERROR_INVALID_FLAGS_COMBINATION => "ERROR_INVALID_FLAGS_COMBINATION",
+            ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_MISMATCH => "ERROR_SPENT_OUTPUTS_MISMATCH",
+            ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_REQUIRED => "ERROR_SPENT_OUTPUTS_REQUIRED",
+            _ => "ERROR_INVALID"
         };
     }
 }

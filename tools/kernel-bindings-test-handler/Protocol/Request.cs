@@ -19,9 +19,9 @@ public class Request
 }
 
 /// <summary>
-/// Parameters for script_pubkey.verify method.
+/// Parameters for btck_script_pubkey_verify method.
 /// </summary>
-public class ScriptVerifyParams
+public class BtckScriptPubkeyVerifyParams
 {
     [JsonPropertyName("script_pubkey_hex")]
     public string ScriptPubKeyHex { get; set; } = string.Empty;
@@ -39,7 +39,7 @@ public class ScriptVerifyParams
     public List<SpentOutput>? SpentOutputs { get; set; }
 
     [JsonPropertyName("flags")]
-    public object? Flags { get; set; }  // Can be uint or string
+    public JsonElement? Flags { get; set; }  // Can be uint, or array
 }
 
 /// <summary>
@@ -50,6 +50,6 @@ public class SpentOutput
     [JsonPropertyName("script_pubkey_hex")]
     public string ScriptPubKeyHex { get; set; } = string.Empty;
 
-    [JsonPropertyName("amount")]
-    public long Amount { get; set; }
+    [JsonPropertyName("value")]
+    public long Value { get; set; }
 }
