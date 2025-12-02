@@ -58,7 +58,7 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
-                Success = true
+                Result = true
             };
         }
         catch (ArgumentOutOfRangeException ex) when (ex.ParamName == "inputIndex")
@@ -66,7 +66,7 @@ public class ScriptVerifyHandler
             return new Response
             {
                 Id = requestId,
-                Success = false,
+                Result = null,
                 Error = new ErrorResponse
                 {
                     Code = new ErrorCode
@@ -79,43 +79,27 @@ public class ScriptVerifyHandler
         }
         catch (ScriptVerificationException ex)
         {
+            // If status is OK, the script just failed verification (result: false)
+            // If status is not OK, it's an actual error condition
+            if (ex.Status == ScriptVerifyStatus.OK)
+            {
+                return new Response
+                {
+                    Id = requestId,
+                    Result = false
+                };
+            }
+
             return new Response
             {
                 Id = requestId,
-                Success = false,
+                Result = null,
                 Error = new ErrorResponse
                 {
                     Code = new ErrorCode
                     {
                         Type = "btck_ScriptVerifyStatus",
                         Member = MapScriptVerifyStatus(ex.Status)
-                    }
-                }
-            };
-        }
-        catch (Exception
-#if DEBUG
-            ex
-#endif
-            )
-        {
-            // Log to stderr for debugging (can be disabled in production)
-#if DEBUG
-            Console.Error.WriteLine($"Exception: {ex.GetType().Name}: {ex.Message}");
-            Console.Error.WriteLine($"StackTrace: {ex.StackTrace}");
-#endif
-
-            // Generic error for unexpected exceptions
-            return new Response
-            {
-                Id = requestId,
-                Success = false,
-                Error = new ErrorResponse
-                {
-                    Code = new ErrorCode
-                    {
-                        Type = "btck_ScriptVerifyStatus",
-                        Member = "Invalid"
                     }
                 }
             };
@@ -213,10 +197,7 @@ public class ScriptVerifyHandler
     {
         return status switch
         {
-            ScriptVerifyStatus.ERROR_TX_INPUT_INDEX => "ERROR_TX_INPUT_INDEX",
-            ScriptVerifyStatus.ERROR_INVALID_FLAGS => "ERROR_INVALID_FLAGS",
             ScriptVerifyStatus.ERROR_INVALID_FLAGS_COMBINATION => "ERROR_INVALID_FLAGS_COMBINATION",
-            ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_MISMATCH => "ERROR_SPENT_OUTPUTS_MISMATCH",
             ScriptVerifyStatus.ERROR_SPENT_OUTPUTS_REQUIRED => "ERROR_SPENT_OUTPUTS_REQUIRED",
             _ => "ERROR_INVALID"
         };

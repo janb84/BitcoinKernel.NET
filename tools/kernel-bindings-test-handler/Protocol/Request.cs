@@ -23,13 +23,13 @@ public class Request
 /// </summary>
 public class BtckScriptPubkeyVerifyParams
 {
-    [JsonPropertyName("script_pubkey_hex")]
+    [JsonPropertyName("script_pubkey")]
     public string ScriptPubKeyHex { get; set; } = string.Empty;
 
     [JsonPropertyName("amount")]
     public long Amount { get; set; }
 
-    [JsonPropertyName("tx_hex")]
+    [JsonPropertyName("tx_to")]
     public string TxHex { get; set; } = string.Empty;
 
     [JsonPropertyName("input_index")]
@@ -47,9 +47,9 @@ public class BtckScriptPubkeyVerifyParams
 /// </summary>
 public class SpentOutput
 {
-    [JsonPropertyName("script_pubkey_hex")]
+    [JsonPropertyName("script_pubkey")]
     public string ScriptPubKeyHex { get; set; } = string.Empty;
 
-    [JsonPropertyName("value")]
+    [JsonPropertyName("amount")]
     public long Value { get; set; }
 }
