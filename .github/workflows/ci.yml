@@ -96,7 +96,7 @@ jobs:
             platform: linux_amd64
 
     env:
-      TEST_VERSION: '0.0.1'
+      TEST_VERSION: '0.0.2'
       TEST_REPO: 'stringintech/kernel-bindings-tests'
       TEST_DIR: '.conformance-tests'
 

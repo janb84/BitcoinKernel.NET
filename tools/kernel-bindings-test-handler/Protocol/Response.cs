@@ -37,6 +37,5 @@ public class ErrorCode
     public string Type { get; set; } = string.Empty;
 
     [JsonPropertyName("member")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Member { get; set; }
+    public string Member { get; set; } = string.Empty;
 }
