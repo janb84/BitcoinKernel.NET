@@ -10,9 +10,9 @@ public class Response
     [JsonPropertyName("id")]
     public string Id { get; set; } = string.Empty;
 
-    [JsonPropertyName("success")]
+    [JsonPropertyName("result")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public object? Success { get; set; }
+    public object? Result { get; set; }
 
     [JsonPropertyName("error")]
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
@@ -24,10 +24,18 @@ public class Response
 /// </summary>
 public class ErrorResponse
 {
+    [JsonPropertyName("code")]
+    public ErrorCode Code { get; set; } = new();
+}
+
+/// <summary>
+/// Represents an error code with type and member information.
+/// </summary>
+public class ErrorCode
+{
     [JsonPropertyName("type")]
     public string Type { get; set; } = string.Empty;
 
-    [JsonPropertyName("variant")]
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public string? Variant { get; set; }
+    [JsonPropertyName("member")]
+    public string Member { get; set; } = string.Empty;
 }

@@ -46,7 +46,10 @@ class Program
                             Id = "unknown",
                             Error = new ErrorResponse
                             {
-                                Type = "InvalidRequest"
+                                Code = new ErrorCode
+                                {
+                                    Type = "InvalidRequest"
+                                }
                             }
                         };
                     }
@@ -62,7 +65,10 @@ class Program
                         Id = "unknown",
                         Error = new ErrorResponse
                         {
-                            Type = "InvalidRequest"
+                            Code = new ErrorCode
+                            {
+                                Type = "InvalidRequest"
+                            }
                         }
                     };
                 }
@@ -91,7 +97,7 @@ class Program
         {
             switch (request.Method)
             {
-                case "script_pubkey.verify":
+                case "btck_script_pubkey_verify":
                     if (request.Params == null)
                     {
                         return new Response
@@ -99,26 +105,32 @@ class Program
                             Id = request.Id,
                             Error = new ErrorResponse
                             {
-                                Type = "InvalidParams"
+                                Code = new ErrorCode
+                                {
+                                    Type = "InvalidParams"
+                                }
                             }
                         };
                     }
 
-                    var scriptVerifyParams = JsonSerializer.Deserialize<ScriptVerifyParams>(request.Params.Value, jsonOptions);
+                    var btckScriptPubkeyVerifyParams = JsonSerializer.Deserialize<BtckScriptPubkeyVerifyParams>(request.Params.Value, jsonOptions);
 
-                    if (scriptVerifyParams == null)
+                    if (btckScriptPubkeyVerifyParams == null)
                     {
                         return new Response
                         {
                             Id = request.Id,
                             Error = new ErrorResponse
                             {
-                                Type = "InvalidParams"
+                                Code = new ErrorCode
+                                {
+                                    Type = "InvalidParams"
+                                }
                             }
                         };
                     }
 
-                    return scriptVerifyHandler.Handle(request.Id, scriptVerifyParams);
+                    return scriptVerifyHandler.Handle(request.Id, btckScriptPubkeyVerifyParams);
 
                 default:
                     return new Response
@@ -126,7 +138,10 @@ class Program
                         Id = request.Id,
                         Error = new ErrorResponse
                         {
-                            Type = "MethodNotFound"
+                            Code = new ErrorCode
+                            {
+                                Type = "MethodNotFound"
+                            }
                         }
                     };
             }
@@ -138,7 +153,10 @@ class Program
                 Id = request.Id,
                 Error = new ErrorResponse
                 {
-                    Type = "InternalError"
+                    Code = new ErrorCode
+                    {
+                        Type = "InternalError"
+                    }
                 }
             };
         }
