@@ -175,17 +175,6 @@ public class ScriptVerifyHandler
             "TAPROOT" => ScriptVerificationFlags.Taproot,
             "ALL" => ScriptVerificationFlags.All,
             "ALL_PRE_TAPROOT" => ScriptVerificationFlags.AllPreTaproot,
-            // Legacy format support
-            "VERIFY_NONE" => ScriptVerificationFlags.None,
-            "VERIFY_P2SH" => ScriptVerificationFlags.P2SH,
-            "VERIFY_DERSIG" => ScriptVerificationFlags.DerSig,
-            "VERIFY_NULLDUMMY" => ScriptVerificationFlags.NullDummy,
-            "VERIFY_CHECKLOCKTIMEVERIFY" => ScriptVerificationFlags.CheckLockTimeVerify,
-            "VERIFY_CHECKSEQUENCEVERIFY" => ScriptVerificationFlags.CheckSequenceVerify,
-            "VERIFY_WITNESS" => ScriptVerificationFlags.Witness,
-            "VERIFY_TAPROOT" => ScriptVerificationFlags.Taproot,
-            "VERIFY_ALL" => ScriptVerificationFlags.All,
-            "VERIFY_ALL_PRE_TAPROOT" => ScriptVerificationFlags.AllPreTaproot,
             _ => throw new ArgumentException($"Unknown flag: {flagStr}")
         };
     }
