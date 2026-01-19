@@ -309,6 +309,18 @@ namespace BitcoinKernel.Interop
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_equals")]
         public static extern int BlockTreeEntryEquals(IntPtr entry1, IntPtr entry2);
 
+        /// <summary>
+        /// Copies a block (reference counted).
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_copy")]
+        public static extern IntPtr BlockCopy(IntPtr block);
+
+        /// <summary>
+        /// Gets a transaction at the specified index in a block.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_transaction_at")]
+        public static extern IntPtr BlockGetTransactionAt(IntPtr block, nuint index);
+
         #endregion
 
         #region BlockHash Operations
@@ -408,6 +420,19 @@ namespace BitcoinKernel.Interop
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_height")]
         public static extern int ChainGetHeight(IntPtr chain);
 
+        /// <summary>
+        /// Gets a block tree entry by height.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_by_height")]
+        public static extern IntPtr ChainGetByHeight(IntPtr chain, int height);
+
+        /// <summary>
+        /// Checks if a block tree entry is in the chain.
+        /// Returns 1 if in chain, 0 otherwise.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_contains")]
+        public static extern int ChainContains(IntPtr chain, IntPtr block_tree_entry);
+
         #endregion
 
         #region Transaction Operations
@@ -497,6 +522,31 @@ namespace BitcoinKernel.Interop
 
         #endregion
 
+        #region PrecomputedTransactionData Operations
+
+        /// <summary>
+        /// Creates precomputed transaction data for script verification.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_precomputed_transaction_data_create")]
+        public static extern IntPtr PrecomputedTransactionDataCreate(
+            IntPtr tx_to,
+            IntPtr[] spent_outputs,
+            nuint spent_outputs_len);
+
+        /// <summary>
+        /// Copies precomputed transaction data.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_precomputed_transaction_data_copy")]
+        public static extern IntPtr PrecomputedTransactionDataCopy(IntPtr precomputed_txdata);
+
+        /// <summary>
+        /// Destroys precomputed transaction data.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_precomputed_transaction_data_destroy")]
+        public static extern void PrecomputedTransactionDataDestroy(IntPtr precomputed_txdata);
+
+        #endregion
+
         #region ScriptPubkey Operations
 
         /// <summary>
@@ -520,8 +570,7 @@ namespace BitcoinKernel.Interop
             IntPtr script_pubkey,
             long amount,
             IntPtr tx_to,
-            IntPtr[]? spent_outputs,
-            nuint spent_outputs_len,
+            IntPtr precomputed_txdata,
             uint input_index,
             uint flags,
             IntPtr status);
@@ -700,38 +749,7 @@ namespace BitcoinKernel.Interop
 
         #endregion
 
-        #region Block Operations (Additional)
 
-        /// <summary>
-        /// Copies a block (reference counted).
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_copy")]
-        public static extern IntPtr BlockCopy(IntPtr block);
-
-        /// <summary>
-        /// Gets a transaction at the specified index in a block.
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_transaction_at")]
-        public static extern IntPtr BlockGetTransactionAt(IntPtr block, nuint index);
-
-        #endregion
-
-        #region Chain Operations (Additional)
-
-        /// <summary>
-        /// Gets a block tree entry by height.
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_get_by_height")]
-        public static extern IntPtr ChainGetByHeight(IntPtr chain, int height);
-
-        /// <summary>
-        /// Checks if a block tree entry is in the chain.
-        /// Returns 1 if in chain, 0 otherwise.
-        /// </summary>
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_contains")]
-        public static extern int ChainContains(IntPtr chain, IntPtr block_tree_entry);
-
-        #endregion
 
         #region BlockSpentOutputs Operations
 

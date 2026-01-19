@@ -56,11 +56,15 @@ public static class ScriptVerifier
         }
 
         // Create spent outputs
-        var kernelSpentOutputs = spentOutputs.Any()
-            ? spentOutputs.Select(utxo => utxo.Handle).ToArray()
-            : null;
-
-
+        IntPtr precomputedDataPtr = IntPtr.Zero;
+        if (spentOutputs.Any())
+        {
+            var kernelSpentOutputs = spentOutputs.Select(utxo => utxo.Handle).ToArray();
+            precomputedDataPtr = NativeMethods.PrecomputedTransactionDataCreate(
+                transaction.Handle,
+                kernelSpentOutputs,
+                (nuint)spentOutputs.Count);
+        }
 
         // Verify script
         // Allocate memory for status byte
@@ -71,8 +75,7 @@ public static class ScriptVerifier
                 scriptPubkey.Handle,
                 amount,
                 transaction.Handle,
-                kernelSpentOutputs,
-                (nuint)spentOutputs.Count,
+                precomputedDataPtr,
                 inputIndex,
                 (uint)flags,
                 statusPtr);
@@ -95,6 +98,10 @@ public static class ScriptVerifier
         finally
         {
             Marshal.FreeHGlobal(statusPtr);
+            if (precomputedDataPtr != IntPtr.Zero)
+            {
+                NativeMethods.PrecomputedTransactionDataDestroy(precomputedDataPtr);
+            }
         }
         return true;
     }

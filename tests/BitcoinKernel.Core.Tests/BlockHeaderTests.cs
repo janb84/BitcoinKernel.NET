@@ -194,7 +194,7 @@ public class BlockHeaderTests : IDisposable
 
         using var block = Block.FromBytes(blockData[0]);
         var blockHash = block.GetHash();
-        
+
         using var header = block.GetHeader();
         var headerHash = header.GetHash();
 
@@ -262,7 +262,7 @@ public class BlockHeaderTests : IDisposable
 
         Assert.True(success);
         Assert.Equal(ValidationMode.VALID, validationState.ValidationMode);
-        
+
         validationState.Dispose();
     }
 
@@ -279,7 +279,7 @@ public class BlockHeaderTests : IDisposable
 
         Assert.False(success);
         Assert.NotEqual(ValidationMode.VALID, validationState.ValidationMode);
-        
+
         validationState.Dispose();
     }
 
@@ -290,7 +290,7 @@ public class BlockHeaderTests : IDisposable
         var headerBytes = blockData[0].Take(80).ToArray();
 
         var header = BlockHeader.FromBytes(headerBytes);
-        
+
         header.Dispose();
         header.Dispose(); // Should not throw
     }
@@ -354,7 +354,7 @@ public class BlockHeaderTests : IDisposable
     public void BlockHeader_ChainedHeaders_PrevHashShouldMatchPreviousBlockHash()
     {
         var blockData = ReadBlockData();
-        
+
         // Get first two blocks
         var firstHeaderBytes = blockData[0].Take(80).ToArray();
         var secondHeaderBytes = blockData[1].Take(80).ToArray();
