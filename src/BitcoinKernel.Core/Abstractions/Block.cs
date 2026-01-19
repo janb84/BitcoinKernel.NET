@@ -73,6 +73,21 @@ public sealed class Block : IDisposable
     }
 
     /// <summary>
+    /// Gets the block header from this block.
+    /// </summary>
+    public BlockHeader GetHeader()
+    {
+        ThrowIfDisposed();
+        var headerPtr = NativeMethods.BlockGetHeader(_handle);
+        if (headerPtr == IntPtr.Zero)
+        {
+            throw new BlockException("Failed to get block header");
+        }
+
+        return new BlockHeader(headerPtr);
+    }
+
+    /// <summary>
     /// Serializes the block to bytes.
     /// </summary>
     public byte[] ToBytes()

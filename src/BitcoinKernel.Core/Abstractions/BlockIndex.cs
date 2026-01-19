@@ -51,4 +51,16 @@ public sealed class BlockIndex
             ? new BlockIndex(prevPtr, ownsHandle: false)
             : null;
     }
+
+    /// <summary>
+    /// Gets the block header associated with this block index.
+    /// </summary>
+    public BlockHeader GetBlockHeader()
+    {
+        var headerPtr = NativeMethods.BlockTreeEntryGetBlockHeader(_handle);
+        if (headerPtr == IntPtr.Zero)
+            throw new InvalidOperationException("Failed to get block header from block index");
+
+        return new BlockHeader(headerPtr);
+    }
 }

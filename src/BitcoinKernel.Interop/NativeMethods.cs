@@ -138,6 +138,22 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr ChainstateManagerGetActiveChain(IntPtr manager);
 
         /// <summary>
+        /// Gets the block tree entry with the most cumulative proof of work.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_get_best_entry")]
+        public static extern IntPtr ChainstateManagerGetBestEntry(IntPtr manager);
+
+        /// <summary>
+        /// Processes and validates a block header.
+        /// Returns 0 on success.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_process_block_header")]
+        public static extern int ChainstateManagerProcessBlockHeader(
+            IntPtr manager,
+            IntPtr header,
+            IntPtr block_validation_state);
+
+        /// <summary>
         /// Imports blocks from an array of file paths.
         /// Returns 0 on success.
         /// </summary>
@@ -241,6 +257,12 @@ namespace BitcoinKernel.Interop
         public static extern IntPtr BlockGetHash(IntPtr block);
 
         /// <summary>
+        /// Gets the block header from a block.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_header")]
+        public static extern IntPtr BlockGetHeader(IntPtr block);
+
+        /// <summary>
         /// Serializes the block to bytes.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_to_bytes")]
@@ -272,6 +294,12 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_previous")]
         public static extern IntPtr BlockTreeEntryGetPrevious(IntPtr block_tree_entry);
+
+        /// <summary>
+        /// Gets the block header from a block tree entry.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_block_header")]
+        public static extern IntPtr BlockTreeEntryGetBlockHeader(IntPtr block_tree_entry);
 
         /// <summary>
         /// Checks if two block tree entries are equal. Two block tree entries are equal when they
@@ -311,7 +339,66 @@ namespace BitcoinKernel.Interop
 
         #endregion
 
+        #region Block Header Operations
 
+        /// <summary>
+        /// Creates a block header from raw serialized data (80 bytes).
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_create")]
+        public static extern IntPtr BlockHeaderCreate(
+            byte[] raw_block_header,
+            UIntPtr raw_block_header_len);
+
+        /// <summary>
+        /// Copies a block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_copy")]
+        public static extern IntPtr BlockHeaderCopy(IntPtr header);
+
+        /// <summary>
+        /// Gets the block hash from a block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_hash")]
+        public static extern IntPtr BlockHeaderGetHash(IntPtr header);
+
+        /// <summary>
+        /// Gets the previous block hash from a block header.
+        /// The returned hash is unowned and only valid for the lifetime of the block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_prev_hash")]
+        public static extern IntPtr BlockHeaderGetPrevHash(IntPtr header);
+
+        /// <summary>
+        /// Gets the timestamp from a block header (Unix epoch seconds).
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_timestamp")]
+        public static extern uint BlockHeaderGetTimestamp(IntPtr header);
+
+        /// <summary>
+        /// Gets the nBits difficulty target from a block header (compact format).
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_bits")]
+        public static extern uint BlockHeaderGetBits(IntPtr header);
+
+        /// <summary>
+        /// Gets the version from a block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_version")]
+        public static extern int BlockHeaderGetVersion(IntPtr header);
+
+        /// <summary>
+        /// Gets the nonce from a block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_get_nonce")]
+        public static extern uint BlockHeaderGetNonce(IntPtr header);
+
+        /// <summary>
+        /// Destroys a block header.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_destroy")]
+        public static extern void BlockHeaderDestroy(IntPtr header);
+
+        #endregion
 
         #region Chain Operations
 
