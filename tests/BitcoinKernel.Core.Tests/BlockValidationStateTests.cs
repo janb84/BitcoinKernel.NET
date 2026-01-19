@@ -10,7 +10,7 @@ public class BlockValidationStateTests
     public void Create_ShouldCreateValidState()
     {
         using var state = new BlockValidationState();
-        
+
         Assert.NotNull(state);
     }
 
@@ -18,9 +18,9 @@ public class BlockValidationStateTests
     public void ValidationMode_NewState_ShouldReturnValid()
     {
         using var state = new BlockValidationState();
-        
+
         var mode = state.ValidationMode;
-        
+
         Assert.Equal(ValidationMode.VALID, mode);
     }
 
@@ -28,9 +28,9 @@ public class BlockValidationStateTests
     public void ValidationResult_NewState_ShouldReturnUnset()
     {
         using var state = new BlockValidationState();
-        
+
         var result = state.ValidationResult;
-        
+
         Assert.Equal(Interop.Enums.BlockValidationResult.UNSET, result);
     }
 
@@ -39,7 +39,7 @@ public class BlockValidationStateTests
     {
         using var original = new BlockValidationState();
         using var copy = original.Copy();
-        
+
         Assert.NotNull(copy);
         Assert.Equal(original.ValidationMode, copy.ValidationMode);
         Assert.Equal(original.ValidationResult, copy.ValidationResult);
@@ -49,7 +49,7 @@ public class BlockValidationStateTests
     public void Dispose_ShouldAllowMultipleCalls()
     {
         var state = new BlockValidationState();
-        
+
         state.Dispose();
         state.Dispose(); // Should not throw
     }
@@ -59,7 +59,7 @@ public class BlockValidationStateTests
     {
         var state = new BlockValidationState();
         state.Dispose();
-        
+
         Assert.Throws<ObjectDisposedException>(() => state.ValidationMode);
     }
 
@@ -68,7 +68,7 @@ public class BlockValidationStateTests
     {
         var state = new BlockValidationState();
         state.Dispose();
-        
+
         Assert.Throws<ObjectDisposedException>(() => state.Copy());
     }
 
@@ -77,7 +77,7 @@ public class BlockValidationStateTests
     {
         var state = new BlockValidationState();
         state.Dispose();
-        
+
         Assert.Throws<ObjectDisposedException>(() => state.ValidationResult);
     }
 }
