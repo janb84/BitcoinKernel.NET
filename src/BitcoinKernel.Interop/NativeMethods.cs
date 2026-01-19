@@ -518,6 +518,12 @@ namespace BitcoinKernel.Interop
         #region Block Validation State
 
         /// <summary>
+        /// Creates a new block validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_validation_state_create")]
+        public static extern IntPtr BlockValidationStateCreate();
+
+        /// <summary>
         /// Gets the validation mode from a block validation state.
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_validation_state_get_validation_mode")]
@@ -528,6 +534,18 @@ namespace BitcoinKernel.Interop
         /// </summary>
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_validation_state_get_block_validation_result")]
         public static extern BlockValidationResult BlockValidationStateGetBlockValidationResult(IntPtr validation_state);
+
+        /// <summary>
+        /// Copies a block validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_validation_state_copy")]
+        public static extern IntPtr BlockValidationStateCopy(IntPtr validation_state);
+
+        /// <summary>
+        /// Destroys a block validation state.
+        /// </summary>
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_validation_state_destroy")]
+        public static extern void BlockValidationStateDestroy(IntPtr validation_state);
 
         #endregion
 
