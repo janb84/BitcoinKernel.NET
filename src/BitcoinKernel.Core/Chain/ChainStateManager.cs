@@ -65,6 +65,40 @@ public sealed class ChainstateManager : IDisposable
     }
 
     /// <summary>
+    /// Gets the block index with the most cumulative proof of work.
+    /// </summary>
+    public BlockIndex GetBestBlockIndex()
+    {
+        ThrowIfDisposed();
+        IntPtr indexPtr = NativeMethods.ChainstateManagerGetBestEntry(_handle);
+        if (indexPtr == IntPtr.Zero)
+            throw new KernelException("Failed to get best block index");
+
+        return new BlockIndex(indexPtr, ownsHandle: false);
+    }
+
+    /// <summary>
+    /// Processes and validates a block header.
+    /// </summary>
+    /// <param name="header">The block header to process.</param>
+    /// <param name="validationState">The validation state result.</param>
+    /// <returns>True if processing was successful, false otherwise.</returns>
+    public bool ProcessBlockHeader(BlockHeader header, out BlockValidationState validationState)
+    {
+        ThrowIfDisposed();
+        ArgumentNullException.ThrowIfNull(header);
+
+        using var state = new BlockValidationState();
+        int result = NativeMethods.ChainstateManagerProcessBlockHeader(
+            _handle,
+            header.Handle,
+            state.Handle);
+
+        validationState = state.Copy();
+        return result == 0;
+    }
+
+    /// <summary>
     /// Processes a block through validation.
     /// </summary>
     public bool ProcessBlock(Block block)
