@@ -4,6 +4,6 @@ using BitcoinKernel.Interop.Enums;
 namespace BitcoinKernel.Interop.Delegates.Notification;
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public delegate void NotifyWarningUnset(
+internal delegate void NotifyWarningUnset(
     IntPtr user_data,
     Warning warning);

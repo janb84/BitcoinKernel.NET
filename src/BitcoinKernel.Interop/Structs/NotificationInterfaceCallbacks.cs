@@ -4,7 +4,7 @@ using BitcoinKernel.Interop.Delegates.Notification;
 namespace BitcoinKernel.Interop.Structs
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct NotificationInterfaceCallbacks
+    internal struct NotificationInterfaceCallbacks
     {
         public IntPtr UserData;
         public NotifyBlockTip BlockTip;

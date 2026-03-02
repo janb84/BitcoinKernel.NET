@@ -4,7 +4,7 @@ using System.Runtime.InteropServices;
 namespace BitcoinKernel.Interop.Delegates.Notification;
 
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public delegate void NotifyProgress(
+internal delegate void NotifyProgress(
     IntPtr user_data,
     [MarshalAs(UnmanagedType.LPUTF8Str)] string title,
     int progress_percent,

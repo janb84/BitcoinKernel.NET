@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace BitcoinKernel.Interop.Structs
 {
     [StructLayout(LayoutKind.Sequential)]
-    public struct LoggingOptions
+    internal struct LoggingOptions
     {
         public int LogTimestamps;
         public int LogTimeMicros;

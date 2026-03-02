@@ -11,7 +11,7 @@ namespace BitcoinKernel.Interop
     /// Low-level P/Invoke declarations for the Bitcoin Kernel C API.
     /// Maps directly to the bitcoinkernel.h C header.
     /// </summary>
-    public static class NativeMethods
+    internal static class NativeMethods
     {
         #region Library Configuration
 
