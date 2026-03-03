@@ -1,4 +1,5 @@
 namespace BitcoinKernel.Interop.Enums;
+
 public enum ChainType : uint
 {
     MAINNET = 0,

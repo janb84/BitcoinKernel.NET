@@ -1,6 +1,7 @@
 using System.Runtime.InteropServices;
 
 namespace BitcoinKernel.Interop.Structs;
+
 [StructLayout(LayoutKind.Sequential)]
 internal struct LoggingOptions
 {

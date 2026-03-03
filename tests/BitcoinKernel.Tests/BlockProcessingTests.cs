@@ -5,6 +5,7 @@ using BitcoinKernel.Primatives;
 using Xunit;
 
 namespace BitcoinKernel.Tests;
+
 public class BlockProcessingTests : IDisposable
 {
     private KernelContext? _context;

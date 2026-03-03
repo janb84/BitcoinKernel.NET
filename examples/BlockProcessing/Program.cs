@@ -5,6 +5,7 @@ using BitcoinKernel.Chain;
 using BitcoinKernel.Interop.Enums;
 
 namespace BlockProcessing;
+
 class Program
 {
     static void Main(string[] args)

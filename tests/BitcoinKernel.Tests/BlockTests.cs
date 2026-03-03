@@ -2,6 +2,7 @@ using BitcoinKernel.Primatives;
 using Xunit;
 
 namespace BitcoinKernel.Tests;
+
 public class BlockTests
 {
     private List<byte[]> ReadBlockData()

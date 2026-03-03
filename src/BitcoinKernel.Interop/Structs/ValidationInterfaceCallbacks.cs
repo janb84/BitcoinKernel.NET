@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using BitcoinKernel.Interop.Delegates.Validation;
 
 namespace BitcoinKernel.Interop.Structs;
+
 [StructLayout(LayoutKind.Sequential)]
 internal struct ValidationInterfaceCallbacks
 {
