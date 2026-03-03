@@ -10,7 +10,7 @@ This library uses [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/mas
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| **BitcoinKernel** | 0.1.2 | Managed wrappers and native bindings |
+| **BitcoinKernel** | 0.2.0 | Managed wrappers and native bindings |
 
 ```bash
 dotnet add package BitcoinKernel
