@@ -1,76 +1,63 @@
-﻿using System;
 using BitcoinKernel;
+using BitcoinKernel.Chain;
+using BitcoinKernel.Interop.Enums;
 
-namespace FacadeExample
+namespace BasicUsage;
+
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
+        Console.WriteLine("=== Bitcoin Kernel Basic Usage Example ===\n");
+        FullChainstateExample();
+    }
+
+    static void FullChainstateExample()
+    {
+        Console.WriteLine("Creating kernel...");
+
+        var dataDir = "/tmp/regtest-data2";
+        var blocksDir = "/tmp/regtest-data/blocks2";
+
+        using var logging = new LoggingConnection((category, message, level) =>
         {
-            Console.WriteLine("=== Bitcoin Kernel Basic Builder Example ===\n");
+            if (level <= (int)LogLevel.INFO)
+                Console.WriteLine($"   [{category}] {message}");
+        });
 
-            FullChainstateExample();
+        using var chainParams = new ChainParameters(ChainType.MAINNET);
+        using var contextOptions = new KernelContextOptions().SetChainParams(chainParams);
+        using var context = new KernelContext(contextOptions);
+        using var options = new ChainstateManagerOptions(context, dataDir, blocksDir)
+            .SetWorkerThreads(2);
+        using var chainstate = new ChainstateManager(context, chainParams, options);
 
-        }
+        Console.WriteLine("   Kernel created successfully!");
 
-        static void FullChainstateExample()
+        try
         {
-            Console.WriteLine("2. Full Chainstate Example:");
+            var chain = chainstate.GetActiveChain();
+            Console.WriteLine($"   Chain height: {chain.Height}");
+            Console.WriteLine($"   Genesis hash: {Convert.ToHexString(chain.GetGenesis().GetBlockHash())}");
 
-            Console.WriteLine("   Creating builder...");
-            var builder = KernelLibrary.Create()
-                .ForMainnet()
-                .WithWorkerThreads(2)
-                .WithDirectories("/tmp/regtest-data2", "/tmp/regtest-data/blocks2");
-
-            Console.WriteLine("   Configuring logging...");
-            builder = builder.WithLogging((category, message, level) =>
+            if (chain.Height > 0)
             {
-                if (level <= (int)BitcoinKernel.Interop.Enums.LogLevel.INFO) // Only INFO and above
-                    Console.WriteLine($"   [{category}] {message}");
-            });
+                var tip = chain.GetTip();
+                Console.WriteLine($"   Tip hash: {Convert.ToHexString(tip.GetBlockHash())}");
 
-            Console.WriteLine("   Building kernel...");
-            using var kernel = builder.Build();
-
-            Console.WriteLine("   Kernel built successfully!");
-            Console.WriteLine("   ✓ Chainstate initialized automatically");
-
-            // Process blocks
-            try
-            {
-
-                Console.WriteLine("   ✓ Ready to process blocks");
-
-                // Show new query methods
-                Console.WriteLine($"   Chain height: {kernel.GetChainHeight()}");
-                Console.WriteLine($"   Genesis hash: {Convert.ToHexString(kernel.GetGenesisBlockHash())}");
-
-                if (kernel.GetChainHeight() > 0)
-                {
-                    var tipHash = kernel.GetChainTipHash();
-                    Console.WriteLine($"   Tip hash: {Convert.ToHexString(tipHash)}");
-
-                    var blockInfo = kernel.GetBlockInfo(0);
-                    if (blockInfo != null)
-                    {
-                        Console.WriteLine($"   Block 0 hash: {Convert.ToHexString(blockInfo.Hash)}");
-                    }
-                }
-
-                Console.WriteLine("   ✓ Chain queries working");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"   ✗ Error: {ex.Message}");
+                var genesis = chain.GetBlockByHeight(0);
+                if (genesis != null)
+                    Console.WriteLine($"   Block 0 hash: {Convert.ToHexString(genesis.GetBlockHash())}");
             }
 
-
-            Console.WriteLine("\nPress any key to exit...");
-            Console.ReadKey();
-
-            kernel.Dispose();
-            Console.WriteLine("   Kernel disposed.");
+            Console.WriteLine("   Chain queries working");
         }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"   Error: {ex.Message}");
+        }
+
+        Console.WriteLine("\nPress any key to exit...");
+        Console.ReadKey();
     }
 }

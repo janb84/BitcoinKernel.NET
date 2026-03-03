@@ -6,4 +6,4 @@ namespace BitcoinKernel.Interop.Delegates;
 /// Function signature for freeing user data.
 /// </summary>
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public delegate void DestroyCallback(IntPtr user_data);
+internal delegate void DestroyCallback(IntPtr user_data);

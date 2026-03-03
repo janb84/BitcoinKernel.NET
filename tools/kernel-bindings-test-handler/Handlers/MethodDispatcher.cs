@@ -1,8 +1,8 @@
-using BitcoinKernel.Core;
-using BitcoinKernel.Core.Abstractions;
-using BitcoinKernel.Core.Chain;
-using BitcoinKernel.Core.Exceptions;
-using BitcoinKernel.Core.ScriptVerification;
+using BitcoinKernel;
+using BitcoinKernel.Primatives;
+using BitcoinKernel.Chain;
+using BitcoinKernel.Exceptions;
+using BitcoinKernel.ScriptVerification;
 using BitcoinKernel.Interop.Enums;
 using BitcoinKernel.TestHandler.Protocol;
 using BitcoinKernel.TestHandler.Registry;
@@ -11,7 +11,7 @@ namespace BitcoinKernel.TestHandler.Handlers;
 
 /// <summary>
 /// Routes all incoming method calls to the appropriate handler and manages the object registry.
-/// Uses BitcoinKernel.Core managed types throughout.
+/// Uses BitcoinKernel managed types throughout.
 /// </summary>
 public sealed class MethodDispatcher : IDisposable
 {
@@ -100,7 +100,7 @@ public sealed class MethodDispatcher : IDisposable
 
         var manager = Get<ChainstateManagerWithTempDir>(csmRef).Manager;
         var chain = manager.GetActiveChain();
-        _registry.Register(refName, new NonOwningRef<Chain>(chain));
+        _registry.Register(refName, new NonOwningRef<BitcoinKernel.Chain.Chain>(chain));
         return Responses.Ref(id, refName);
     }
 
@@ -133,7 +133,7 @@ public sealed class MethodDispatcher : IDisposable
     public Response ChainGetHeight(string id, BtckChainGetHeightParams p)
     {
         if (p.Chain?.Ref is not { } chainRef) return RefError(id);
-        return Responses.Ok(id, GetVal<Chain>(chainRef).Height);
+        return Responses.Ok(id, GetVal<BitcoinKernel.Chain.Chain>(chainRef).Height);
     }
 
     public Response ChainGetByHeight(string id, string? refName, BtckChainGetByHeightParams p)
@@ -141,7 +141,7 @@ public sealed class MethodDispatcher : IDisposable
         if (refName == null) return RefError(id);
         if (p.Chain?.Ref is not { } chainRef) return RefError(id);
 
-        var blockIndex = GetVal<Chain>(chainRef).GetBlockByHeight(p.BlockHeight);
+        var blockIndex = GetVal<BitcoinKernel.Chain.Chain>(chainRef).GetBlockByHeight(p.BlockHeight);
         if (blockIndex == null) return Responses.EmptyError(id);
 
         _registry.Register(refName, new NonOwningRef<BlockIndex>(blockIndex));
@@ -153,7 +153,7 @@ public sealed class MethodDispatcher : IDisposable
         if (p.Chain?.Ref is not { } chainRef) return RefError(id);
         if (p.BlockTreeEntry?.Ref is not { } bteRef) return RefError(id);
 
-        bool contains = GetVal<Chain>(chainRef).Contains(GetVal<BlockIndex>(bteRef));
+        bool contains = GetVal<BitcoinKernel.Chain.Chain>(chainRef).Contains(GetVal<BlockIndex>(bteRef));
         return Responses.Ok(id, contains);
     }
 

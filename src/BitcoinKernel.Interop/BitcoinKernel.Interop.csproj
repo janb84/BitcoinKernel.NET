@@ -8,6 +8,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>BitcoinKernel</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+  <ItemGroup>
     <!-- Include native libraries for macOS -->
     <None Include="..\..\native\osx-x64\libbitcoinkernel.dylib" Link="runtimes\osx-x64\native\libbitcoinkernel.dylib">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

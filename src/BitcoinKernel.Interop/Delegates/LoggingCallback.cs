@@ -7,7 +7,7 @@ namespace BitcoinKernel.Interop.Delegates;
 /// internal logs will pass through this callback.
 /// </summary>
 [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-public delegate void LoggingCallback(
+internal delegate void LoggingCallback(
     IntPtr user_data,
     IntPtr message,
     nuint message_len);

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\BitcoinKernel.Core\BitcoinKernel.Core.csproj" />
+    <ProjectReference Include="..\..\src\BitcoinKernel\BitcoinKernel.csproj" />
   </ItemGroup>
 
   <ItemGroup>
