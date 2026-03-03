@@ -16,6 +16,55 @@ public static class ScriptVerifier
 {
 
     /// <summary>
+    /// Verifies a script pubkey using externally-managed precomputed transaction data.
+    /// Use this overload when the <see cref="PrecomputedTransactionData"/> is created
+    /// separately and reused across multiple inputs of the same transaction.
+    /// </summary>
+    /// <param name="scriptPubkey">The output script to verify against.</param>
+    /// <param name="amount">The amount of the output being spent.</param>
+    /// <param name="transaction">The transaction containing the input to verify.</param>
+    /// <param name="precomputedTxData">Optional externally-managed precomputed transaction data. Required for Taproot.</param>
+    /// <param name="inputIndex">The index of the transaction input to verify.</param>
+    /// <param name="flags">Script verification flags to use.</param>
+    /// <returns>True if the script is valid, false if invalid.</returns>
+    /// <exception cref="ScriptVerificationException">Thrown when verification fails with an error status.</exception>
+    public static bool VerifyScript(
+        ScriptPubKey scriptPubkey,
+        long amount,
+        Transaction transaction,
+        PrecomputedTransactionData? precomputedTxData,
+        uint inputIndex,
+        ScriptVerificationFlags flags = ScriptVerificationFlags.All)
+    {
+        IntPtr precomputedPtr = precomputedTxData?.Handle ?? IntPtr.Zero;
+
+        IntPtr statusPtr = Marshal.AllocHGlobal(1);
+        try
+        {
+            int result = NativeMethods.ScriptPubkeyVerify(
+                scriptPubkey.Handle,
+                amount,
+                transaction.Handle,
+                precomputedPtr,
+                inputIndex,
+                (uint)flags,
+                statusPtr);
+
+            byte statusCode = Marshal.ReadByte(statusPtr);
+            var status = (ScriptVerifyStatus)statusCode;
+
+            if (status != ScriptVerifyStatus.OK)
+                throw new ScriptVerificationException(status, $"Script verification failed: {status}");
+
+            return result != 0;
+        }
+        finally
+        {
+            Marshal.FreeHGlobal(statusPtr);
+        }
+    }
+
+    /// <summary>
     /// Verifies a script pubkey against a transaction input, throwing an exception on error.
     /// </summary>
     /// <param name="scriptPubkey">The output script to verify against.</param>
