@@ -54,14 +54,14 @@ public sealed class ChainstateManager : IDisposable
     /// <summary>
     /// Gets the active chain.
     /// </summary>
-    public Abstractions.Chain GetActiveChain()
+    public Chain GetActiveChain()
     {
         ThrowIfDisposed();
         IntPtr chainPtr = NativeMethods.ChainstateManagerGetActiveChain(_handle);
         if (chainPtr == IntPtr.Zero)
             throw new KernelException("Failed to get active chain");
 
-        return new Abstractions.Chain(chainPtr);
+        return new Chain(chainPtr);
     }
 
     /// <summary>
