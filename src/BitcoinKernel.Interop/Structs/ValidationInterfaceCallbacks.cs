@@ -1,15 +1,13 @@
 using System.Runtime.InteropServices;
 using BitcoinKernel.Interop.Delegates.Validation;
 
-namespace BitcoinKernel.Interop.Structs
+namespace BitcoinKernel.Interop.Structs;
+[StructLayout(LayoutKind.Sequential)]
+internal struct ValidationInterfaceCallbacks
 {
-    [StructLayout(LayoutKind.Sequential)]
-    internal struct ValidationInterfaceCallbacks
-    {
-        public IntPtr UserData;
-        public ValidationBlockChecked BlockChecked;
-        public ValidationNewPoWValidBlock NewPoWValidBlock;
-        public ValidationBlockConnected BlockConnected;
-        public ValidationBlockDisconnected BlockDisconnected;
-    }
+    public IntPtr UserData;
+    public ValidationBlockChecked BlockChecked;
+    public ValidationNewPoWValidBlock NewPoWValidBlock;
+    public ValidationBlockConnected BlockConnected;
+    public ValidationBlockDisconnected BlockDisconnected;
 }
