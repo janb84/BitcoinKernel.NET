@@ -20,5 +20,7 @@
   <ItemGroup>
     <Using Include="Xunit" />
     <ProjectReference Include="..\..\src\BitcoinKernel\BitcoinKernel.csproj" />
+    <ProjectReference Include="..\..\src\BitcoinKernel.Interop\BitcoinKernel.Interop.csproj" />
   </ItemGroup>
+
 </Project>

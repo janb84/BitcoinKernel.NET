@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
-      <_Parameter1>BitcoinKernel.Core</_Parameter1>
+      <_Parameter1>BitcoinKernel</_Parameter1>
     </AssemblyAttribute>
   </ItemGroup>
 

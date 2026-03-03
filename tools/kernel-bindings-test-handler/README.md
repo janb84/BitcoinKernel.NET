@@ -7,7 +7,7 @@ It implements the protocol specification [kernel-bindings-test handler-spec](htt
 
 The handler is a console application that:
 - Reads JSON requests line-by-line from stdin
-- Processes each request using the BitcoinKernel.Core library
+- Processes each request using the BitcoinKernel library
 - Writes JSON responses to stdout
 - Exits cleanly when stdin closes
 
@@ -137,12 +137,12 @@ tools/kernel-bindings-test-handler/
 
 ## Dependencies
 
-- BitcoinKernel.Core: The core library being tested
+- BitcoinKernel: The core library being tested
 - System.Text.Json: JSON serialization
 
 ## Error Handling
 
-The handler maps BitcoinKernel.Core exceptions to protocol error responses:
+The handler maps BitcoinKernel exceptions to protocol error responses:
 
 | Exception | Error Type | Error Variant |
 |-----------|-----------|---------------|
