@@ -1,6 +1,6 @@
 using System.IO;
 using BitcoinKernel;
-using BitcoinKernel.Abstractions;
+using BitcoinKernel.Primatives;
 using BitcoinKernel.Chain;
 using BitcoinKernel.Interop.Enums;
 

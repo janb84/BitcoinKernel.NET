@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 /// <summary>
 /// Managed wrapper for Bitcoin transactions with automatic memory management.

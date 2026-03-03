@@ -2,7 +2,7 @@
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 /// <summary>
 /// Represents a block in the blockchain.

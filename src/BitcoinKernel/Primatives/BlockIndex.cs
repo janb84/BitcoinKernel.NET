@@ -1,6 +1,6 @@
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 /// <summary>
 /// Represents a block index entry in the block tree.

@@ -2,7 +2,7 @@ using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 using BitcoinKernel.Interop.Enums;
 
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 /// <summary>
 /// Represents the validation state of a block.

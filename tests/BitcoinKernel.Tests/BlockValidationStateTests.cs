@@ -1,4 +1,4 @@
-using BitcoinKernel.Abstractions;
+using BitcoinKernel.Primatives;
 using BitcoinKernel.Interop.Enums;
 using Xunit;
 

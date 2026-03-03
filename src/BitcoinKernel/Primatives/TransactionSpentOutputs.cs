@@ -1,4 +1,4 @@
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 using BitcoinKernel.Interop;
 using System;

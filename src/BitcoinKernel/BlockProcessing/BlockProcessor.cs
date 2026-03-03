@@ -1,5 +1,5 @@
 using System;
-using BitcoinKernel.Abstractions;
+using BitcoinKernel.Primatives;
 using BitcoinKernel.Chain;
 
 using BitcoinKernel.Exceptions;

@@ -1,6 +1,7 @@
 using BitcoinKernel.Chain;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop.Enums;
+using BitcoinKernel.Primatives;
 using Xunit;
 
 namespace BitcoinKernel.Tests
@@ -65,7 +66,7 @@ namespace BitcoinKernel.Tests
         {
             foreach (var rawBlock in blockData)
             {
-                using var block = Abstractions.Block.FromBytes(rawBlock);
+                using var block = Block.FromBytes(rawBlock);
                 chainstateManager.ProcessBlock(block);
             }
         }
@@ -96,7 +97,7 @@ namespace BitcoinKernel.Tests
             // Act & Assert
             foreach (var rawBlock in blockData)
             {
-                using var block = Abstractions.Block.FromBytes(rawBlock);
+                using var block = Block.FromBytes(rawBlock);
                 var result = chainstateManager.ProcessBlock(block);
 
                 // Assert the block was processed successfully (is new)
@@ -117,7 +118,7 @@ namespace BitcoinKernel.Tests
 
             // Act & Assert
             chainstateManager.ImportBlocks();
-            using var block2 = Abstractions.Block.FromBytes(blockData[1]);
+            using var block2 = Block.FromBytes(blockData[1]);
 
             // The block should be invalid and processing should fail
             var exception = Assert.Throws<ChainstateManagerException>(() =>
@@ -142,7 +143,7 @@ namespace BitcoinKernel.Tests
 
                 foreach (var rawBlock in blockData)
                 {
-                    using var block = Abstractions.Block.FromBytes(rawBlock);
+                    using var block = Block.FromBytes(rawBlock);
                     var result = chainstateManager.ProcessBlock(block);
                     Assert.True(result, "Block should be new and processed successfully");
                 }
@@ -176,7 +177,7 @@ namespace BitcoinKernel.Tests
 
                 // Not a block
                 var invalidBlockData = Convert.FromHexString("deadbeef");
-                Assert.Throws<BlockException>(() => Abstractions.Block.FromBytes(invalidBlockData));
+                Assert.Throws<BlockException>(() => Block.FromBytes(invalidBlockData));
 
                 // Invalid block
                 var invalidBlockHex = "010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd" +
@@ -186,7 +187,7 @@ namespace BitcoinKernel.Tests
                     "1600ae1390813a627c66fb8be7947be63c52da7589379515d4e0a604f8141781e62294721166bf62" +
                     "1e73a82cbf2342c858eeac00000000";
 
-                using var block = Abstractions.Block.FromBytes(Convert.FromHexString(invalidBlockHex));
+                using var block = Block.FromBytes(Convert.FromHexString(invalidBlockHex));
 
                 // The block should be invalid and processing should fail
                 var exception = Assert.Throws<ChainstateManagerException>(() =>
@@ -477,7 +478,7 @@ namespace BitcoinKernel.Tests
             Assert.NotNull(blockIndex);
 
             // Use the block data we already have (index 1 corresponds to blockData[1])
-            using var block = Abstractions.Block.FromBytes(blockData[1]);
+            using var block = Block.FromBytes(blockData[1]);
             using var spentOutputs = chainstateManager.ReadSpentOutputs(blockIndex);
 
             // Zip block transactions (skipping coinbase) with spent outputs

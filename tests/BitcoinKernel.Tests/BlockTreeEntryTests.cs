@@ -1,6 +1,7 @@
 using BitcoinKernel.BlockProcessing;
 using BitcoinKernel.Chain;
 using BitcoinKernel.Interop.Enums;
+using BitcoinKernel.Primatives;
 
 
 namespace BitcoinKernel.Tests;
@@ -41,7 +42,7 @@ public class BlockTreeEntryTests : IDisposable
         // Process test blocks
         foreach (var rawBlock in ReadBlockData())
         {
-            using var block = Abstractions.Block.FromBytes(rawBlock);
+            using var block = Block.FromBytes(rawBlock);
             _chainstateManager.ProcessBlock(block);
         }
     }

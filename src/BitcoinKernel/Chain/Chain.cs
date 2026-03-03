@@ -1,6 +1,6 @@
 
 
-using BitcoinKernel.Abstractions;
+using BitcoinKernel.Primatives;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 

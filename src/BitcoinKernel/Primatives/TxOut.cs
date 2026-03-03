@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Abstractions;
+namespace BitcoinKernel.Primatives;
 
 /// <summary>
 /// Represents a transaction output (TxOut) in a Bitcoin transaction.
