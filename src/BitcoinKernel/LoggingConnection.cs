@@ -2,6 +2,8 @@ using System.Runtime.InteropServices;
 using BitcoinKernel.Interop;
 using BitcoinKernel.Interop.Delegates;
 
+namespace BitcoinKernel;
+
 public sealed class LoggingConnection : IDisposable
 {
     private IntPtr _handle;
