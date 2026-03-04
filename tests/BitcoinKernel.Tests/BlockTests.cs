@@ -1,4 +1,4 @@
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 using Xunit;
 
 namespace BitcoinKernel.Tests;

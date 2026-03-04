@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 
 namespace BitcoinKernel.Chain;
 

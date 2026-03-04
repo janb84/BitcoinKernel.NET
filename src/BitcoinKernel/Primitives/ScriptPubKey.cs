@@ -2,7 +2,7 @@ using System.Net;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Primatives;
+namespace BitcoinKernel.Primitives;
 
 /// A single script pubkey containing spending conditions for a transaction output.
 ///

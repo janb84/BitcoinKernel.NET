@@ -1,6 +1,6 @@
 using System;
 using BitcoinKernel.ScriptVerification;
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Chain;
 using BitcoinKernel.Interop.Enums;
