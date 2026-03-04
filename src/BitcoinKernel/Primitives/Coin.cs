@@ -1,7 +1,7 @@
 using System;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Primatives;
+namespace BitcoinKernel.Primitives;
 
 /// <summary>
 /// Represents a coin (unspent transaction output) with confirmation height information.

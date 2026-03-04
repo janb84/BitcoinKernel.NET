@@ -1,7 +1,7 @@
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Primatives;
+namespace BitcoinKernel.Primitives;
 
 /// <summary>
 /// Represents a block header containing metadata about a block.

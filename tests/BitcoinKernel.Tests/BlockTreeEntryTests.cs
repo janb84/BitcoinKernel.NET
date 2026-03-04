@@ -1,7 +1,7 @@
 using BitcoinKernel.BlockProcessing;
 using BitcoinKernel.Chain;
 using BitcoinKernel.Interop.Enums;
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 
 
 namespace BitcoinKernel.Tests;
