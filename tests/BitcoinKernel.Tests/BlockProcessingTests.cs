@@ -1,7 +1,7 @@
 using BitcoinKernel.Chain;
 using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop.Enums;
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 using Xunit;
 
 namespace BitcoinKernel.Tests;

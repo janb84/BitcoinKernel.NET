@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed `BitcoinKernel` facade package and `KernelLibrary` fluent builder; consumers now use the managed API directly
 - Renamed package/namespaces from `BitcoinKernel.Core` to `BitcoinKernel`
 - `Chain` class moved from `BitcoinKernel.Abstractions` to `BitcoinKernel.Chain`; import `using BitcoinKernel.Chain;` to access it
-- `BitcoinKernel.Abstractions` namespace renamed to `BitcoinKernel.Primatives`; update any `using BitcoinKernel.Abstractions;` imports accordingly
+ - `BitcoinKernel.Abstractions` namespace renamed to `BitcoinKernel.Primitives`; update any `using BitcoinKernel.Abstractions;` imports accordingly
 - `LoggingConnection` moved from the global namespace into `BitcoinKernel`; add `using BitcoinKernel;` if not already present
 
 ### Changed

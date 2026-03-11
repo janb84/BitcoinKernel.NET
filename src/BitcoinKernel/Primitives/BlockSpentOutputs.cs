@@ -1,7 +1,7 @@
 using System;
 using BitcoinKernel.Interop;
 
-namespace BitcoinKernel.Primatives;
+namespace BitcoinKernel.Primitives;
 
 /// <summary>
 /// Represents the spent outputs for all transactions in a block.

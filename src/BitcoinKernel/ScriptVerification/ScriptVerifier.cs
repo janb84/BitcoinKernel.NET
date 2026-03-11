@@ -5,7 +5,7 @@ using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 using BitcoinKernel.Interop.Enums;
 
-using BitcoinKernel.Primatives;
+using BitcoinKernel.Primitives;
 
 namespace BitcoinKernel.ScriptVerification;
 
