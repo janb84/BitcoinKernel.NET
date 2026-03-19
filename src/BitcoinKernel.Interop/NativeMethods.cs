@@ -489,6 +489,12 @@ internal static class NativeMethods
     public static extern IntPtr TransactionGetInputAt(IntPtr transaction, nuint index);
 
     /// <summary>
+    /// Gets the nLockTime value of a transaction.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_get_locktime")]
+    public static extern uint TransactionGetLocktime(IntPtr transaction);
+
+    /// <summary>
     /// Destroys a transaction.
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_destroy")]
@@ -860,6 +866,12 @@ internal static class NativeMethods
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_out_point")]
     public static extern IntPtr TransactionInputGetOutPoint(IntPtr transaction_input);
+
+    /// <summary>
+    /// Gets the nSequence value from a transaction input.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_sequence")]
+    public static extern uint TransactionInputGetSequence(IntPtr transaction_input);
 
     /// <summary>
     /// Destroys a transaction input.
