@@ -90,6 +90,11 @@ public sealed class Transaction : IDisposable
     public int OutputCount => (int)NativeMethods.TransactionCountOutputs(_handle);
 
     /// <summary>
+    /// Gets the nLockTime value of this transaction.
+    /// </summary>
+    public uint LockTime => NativeMethods.TransactionGetLocktime(_handle);
+
+    /// <summary>
     /// Gets the transaction ID (txid) as bytes.
     /// </summary>
     /// <returns>The transaction ID as a byte array.</returns>
@@ -118,7 +123,7 @@ public sealed class Transaction : IDisposable
 
     /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
     /// <exception cref="TransactionException">Thrown when input retrieval fails.</exception>
-    public IntPtr GetInputAt(int index)
+    public TxIn GetInputAt(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, InputCount);
@@ -127,7 +132,7 @@ public sealed class Transaction : IDisposable
         if (inputPtr == IntPtr.Zero)
             throw new TransactionException($"Failed to get input at index {index}");
 
-        return inputPtr;
+        return new TxIn(inputPtr, ownsHandle: false);
     }
 
     /// <returns>The TxOut at the specified index.</returns>

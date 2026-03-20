@@ -25,7 +25,13 @@
       <Pack>true</Pack>
       <PackagePath>runtimes/linux-x64/native</PackagePath>
     </None>
-    
+    <!-- Include native libraries for Windows -->
+    <None Include="..\..\native\win-x64\bitcoinkernel.dll" Link="runtimes\win-x64\native\bitcoinkernel.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes/win-x64/native</PackagePath>
+    </None>
+
   </ItemGroup>
 
 </Project>
