@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     
     <!-- NuGet Package Metadata -->
     <PackageId>BitcoinKernel</PackageId>
-    <Version>0.2.0</Version>
+    <Version>0.3.0</Version>
     <Authors>JanB84</Authors>
     <Description>.NET bindings and managed wrappers for libbitcoinkernel. Provides direct access to Bitcoin Core consensus and validation logic with automatic memory management.</Description>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

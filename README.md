@@ -10,7 +10,7 @@ This library uses [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/mas
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| **BitcoinKernel** | 0.2.0 | Managed wrappers and native bindings |
+| **BitcoinKernel** | 0.3.0 | Managed wrappers and native bindings |
 
 ```bash
 dotnet add package BitcoinKernel
@@ -82,7 +82,7 @@ dotnet run --project tools/kernel-bindings-test-handler
 
 ### Prerequisites
 
-- .NET 9.0 SDK or later
+- .NET 10.0 SDK or later
 
 ### Build
 
