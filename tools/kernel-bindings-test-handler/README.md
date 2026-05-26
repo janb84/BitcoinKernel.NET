@@ -108,7 +108,7 @@ Clone the repo and build.
 
 Execute the test: 
 ```bash
- ./build/runner --handler /Users/arjan/Projects/BitcoinKernel.NET/tools/kernel-bindings-test-handler/bin/kernel-bindings-test-handler
+ ./build/runner --handler BitcoinKernel.NET/tools/kernel-bindings-test-handler/bin/kernel-bindings-test-handler
 ```
 
 ## Testing

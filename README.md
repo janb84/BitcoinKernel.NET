@@ -82,7 +82,7 @@ dotnet run --project tools/kernel-bindings-test-handler
 
 ### Prerequisites
 
-- .NET 9.0 SDK or later
+- .NET 10.0 SDK or later
 
 ### Build
 
