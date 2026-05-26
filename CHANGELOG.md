@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-05-26
+
+### Breaking Changes
+- Retargeted the published package and all repo projects from `net9.0` to `net10.0`; consumers must build and run on .NET 10 SDK/runtime or stay on `0.2.x`
+
+### Changed
+- Removed the handler's redundant `System.Text.Json` package reference now that it is provided by the framework target
+
 ## [0.2.0] - 2026-03-03
 
 ### Breaking Changes
