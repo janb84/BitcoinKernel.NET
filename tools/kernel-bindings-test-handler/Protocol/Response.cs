@@ -8,7 +8,7 @@ namespace BitcoinKernel.TestHandler.Protocol;
 /// </summary>
 public class Response
 {
-    [JsonPropertyName("id")]
+    [JsonIgnore]
     public string Id { get; set; } = string.Empty;
 
     [JsonPropertyName("result")]
