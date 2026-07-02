@@ -26,19 +26,30 @@ public sealed class BlockIndex
     public int Height => NativeMethods.BlockTreeEntryGetHeight(_handle);
 
     /// <summary>
-    /// Gets the block hash.
+    /// Gets the block hash of this entry as a 32-byte array.
     /// </summary>
-    public byte[] GetBlockHash()
+    public byte[] GetHash()
+    {
+        using var hash = GetBlockHash();
+        return hash.ToBytes();
+    }
+
+    /// <summary>
+    /// Gets the block hash of this entry as an owned <see cref="BlockHash"/> object.
+    /// </summary>
+    public BlockHash GetBlockHash()
     {
         var hashPtr = NativeMethods.BlockTreeEntryGetBlockHash(_handle);
         if (hashPtr == IntPtr.Zero)
             throw new InvalidOperationException("Failed to get block hash");
 
-        // The hash pointer is owned by the block tree entry, so we just read the bytes
-        // without wrapping it in a BlockHash that would try to destroy it
-        var bytes = new byte[32];
-        NativeMethods.BlockHashToBytes(hashPtr, bytes);
-        return bytes;
+        // The returned pointer is owned by the block tree entry, so copy it into an
+        // independently owned block hash.
+        var copy = NativeMethods.BlockHashCopy(hashPtr);
+        if (copy == IntPtr.Zero)
+            throw new InvalidOperationException("Failed to copy block hash");
+
+        return new BlockHash(copy);
     }
 
     /// <summary>

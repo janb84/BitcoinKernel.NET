@@ -257,7 +257,7 @@ public class BlockProcessingTests : IDisposable
                     Assert.NotNull(output);
 
                     // Verify we can get the script pubkey from the output
-                    var scriptPubkeyBytes = output.GetScriptPubkey();
+                    var scriptPubkeyBytes = output.GetScriptPubkeyBytes();
                     Assert.NotNull(scriptPubkeyBytes);
                     Assert.True(scriptPubkeyBytes.Length >= 0, "Script pubkey should have valid length");
 
@@ -286,14 +286,14 @@ public class BlockProcessingTests : IDisposable
         var genesis = chain.GetGenesis();
         Assert.NotNull(genesis);
         Assert.Equal(0, genesis.Height);
-        var genesisHash = genesis.GetBlockHash();
+        var genesisHash = genesis.GetHash();
         Assert.NotNull(genesisHash);
 
         // Test tip block
         var tip = chain.GetTip();
         Assert.NotNull(tip);
         var tipHeight = tip.Height;
-        var tipHash = tip.GetBlockHash();
+        var tipHash = tip.GetHash();
 
         Assert.True(tipHeight > 0);
         Assert.False(genesisHash.SequenceEqual(tipHash));
@@ -302,13 +302,13 @@ public class BlockProcessingTests : IDisposable
         var genesisViaHeight = chain.GetBlockByHeight(0);
         Assert.NotNull(genesisViaHeight);
         Assert.Equal(0, genesisViaHeight.Height);
-        Assert.True(genesisHash.SequenceEqual(genesisViaHeight.GetBlockHash()));
+        Assert.True(genesisHash.SequenceEqual(genesisViaHeight.GetHash()));
 
         // Test accessing block by height - tip
         var tipViaHeight = chain.GetBlockByHeight(tipHeight);
         Assert.NotNull(tipViaHeight);
         Assert.Equal(tipHeight, tipViaHeight.Height);
-        Assert.True(tipHash.SequenceEqual(tipViaHeight.GetBlockHash()));
+        Assert.True(tipHash.SequenceEqual(tipViaHeight.GetHash()));
 
         // Test invalid height returns null
         var invalidEntry = chain.GetBlockByHeight(9999);

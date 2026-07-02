@@ -72,29 +72,22 @@ public class TxOut : IDisposable
     }
 
     /// <summary>
-    /// Gets the script pubkey as a byte array.
+    /// Gets the script pubkey of this output as a non-owning <see cref="ScriptPubKey"/>
+    /// object whose lifetime is tied to this output.
+    /// </summary>
+    public ScriptPubKey GetScriptPubkey()
+    {
+        return new ScriptPubKey(GetScriptPubkeyPtr(), ownsHandle: false);
+    }
+
+    /// <summary>
+    /// Gets the script pubkey of this output as a byte array.
     /// </summary>
     /// <returns>The script pubkey bytes.</returns>
-    public byte[] GetScriptPubkey()
+    public byte[] GetScriptPubkeyBytes()
     {
-        IntPtr scriptPtr = GetScriptPubkeyPtr();
-
-        var bytes = new List<byte>();
-        NativeMethods.WriteBytes writer = (data, len, _) =>
-        {
-            var buffer = new byte[len];
-            Marshal.Copy(data, buffer, 0, (int)len);
-            bytes.AddRange(buffer);
-            return 0;
-        };
-
-        int result = NativeMethods.ScriptPubkeyToBytes(scriptPtr, writer, IntPtr.Zero);
-        if (result != 0)
-        {
-            throw new TransactionException("Failed to serialize script pubkey");
-        }
-
-        return bytes.ToArray();
+        using var scriptPubkey = GetScriptPubkey();
+        return scriptPubkey.ToBytes();
     }
 
     /// <summary>

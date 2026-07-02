@@ -96,6 +96,13 @@ internal static class NativeMethods
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_parameters_destroy")]
     public static extern void ChainParametersDestroy(IntPtr chain_params);
 
+    /// <summary>
+    /// Gets the consensus parameters from chain parameters. The returned pointer
+    /// is unowned and only valid for the lifetime of the chain parameters.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_parameters_get_consensus_params")]
+    public static extern IntPtr ChainParametersGetConsensusParams(IntPtr chain_parameters);
+
     #endregion
 
     #region Chainstate Manager
@@ -143,14 +150,14 @@ internal static class NativeMethods
     public static extern IntPtr ChainstateManagerGetBestEntry(IntPtr manager);
 
     /// <summary>
-    /// Processes and validates a block header.
-    /// Returns 0 on success.
+    /// Processes and validates a block header. Returns a newly-allocated
+    /// btck_BlockValidationState (owned by the caller) describing the outcome,
+    /// or IntPtr.Zero on failure.
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_process_block_header")]
-    public static extern int ChainstateManagerProcessBlockHeader(
+    public static extern IntPtr ChainstateManagerProcessBlockHeader(
         IntPtr manager,
-        IntPtr header,
-        IntPtr block_validation_state);
+        IntPtr header);
 
     /// <summary>
     /// Imports blocks from an array of file paths.
@@ -320,6 +327,26 @@ internal static class NativeMethods
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_get_transaction_at")]
     public static extern IntPtr BlockGetTransactionAt(IntPtr block, nuint index);
 
+    /// <summary>
+    /// Returns the ancestor of a block tree entry at the given height.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_tree_entry_get_ancestor")]
+    public static extern IntPtr BlockTreeEntryGetAncestor(IntPtr block_tree_entry, int height);
+
+    /// <summary>
+    /// Performs context-free validation checks on a block.
+    /// Runs base checks (size, coinbase, tx, sigops) plus optional POW and
+    /// merkle-root checks controlled by <paramref name="flags"/>. The
+    /// validation_state is updated in-place.
+    /// Returns 1 if the block passed the checks, 0 otherwise.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_check")]
+    public static extern int BlockCheck(
+        IntPtr block,
+        IntPtr consensus_params,
+        BlockCheckFlags flags,
+        IntPtr validation_state);
+
     #endregion
 
     #region BlockHash Operations
@@ -408,6 +435,15 @@ internal static class NativeMethods
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_destroy")]
     public static extern void BlockHeaderDestroy(IntPtr header);
+
+    /// <summary>
+    /// Serializes a block header to 80 bytes.
+    /// Returns 0 on success.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_block_header_to_bytes")]
+    public static extern int BlockHeaderToBytes(
+        IntPtr header,
+        [MarshalAs(UnmanagedType.LPArray, SizeConst = 80)] byte[] output);
 
     #endregion
 
@@ -518,6 +554,20 @@ internal static class NativeMethods
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_output_destroy")]
     public static extern void TransactionOutputDestroy(IntPtr output);
+
+    /// <summary>
+    /// Gets the nLockTime value of a transaction.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_get_locktime")]
+    public static extern uint TransactionGetLocktime(IntPtr transaction);
+
+    /// <summary>
+    /// Runs context-free consensus validation on a transaction.
+    /// The validation_state is reset on entry and updated in-place.
+    /// Returns 1 if valid, 0 if invalid.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_check")]
+    public static extern int TransactionCheck(IntPtr tx, IntPtr validation_state);
 
     #endregion
 
@@ -867,6 +917,12 @@ internal static class NativeMethods
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_destroy")]
     public static extern void TransactionInputDestroy(IntPtr transaction_input);
 
+    /// <summary>
+    /// Gets the nSequence value of a transaction input.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_sequence")]
+    public static extern uint TransactionInputGetSequence(IntPtr transaction_input);
+
     #endregion
 
     #region TransactionOutPoint Operations
@@ -896,5 +952,34 @@ internal static class NativeMethods
     public static extern void TransactionOutPointDestroy(IntPtr transaction_out_point);
 
     #endregion
+
+    #region Tx Validation State
+
+    /// <summary>
+    /// Creates a new transaction validation state.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_create")]
+    public static extern IntPtr TxValidationStateCreate();
+
+    /// <summary>
+    /// Gets the validation mode from a transaction validation state.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_get_validation_mode")]
+    public static extern ValidationMode TxValidationStateGetValidationMode(IntPtr validation_state);
+
+    /// <summary>
+    /// Gets the transaction validation result from a transaction validation state.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_get_tx_validation_result")]
+    public static extern TxValidationResult TxValidationStateGetTxValidationResult(IntPtr validation_state);
+
+    /// <summary>
+    /// Destroys a transaction validation state.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_destroy")]
+    public static extern void TxValidationStateDestroy(IntPtr validation_state);
+
+    #endregion
+
 
 }

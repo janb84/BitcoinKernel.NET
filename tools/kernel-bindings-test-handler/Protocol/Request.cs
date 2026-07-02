@@ -117,6 +117,63 @@ public class BtckBlockCreateParams
     public string RawBlock { get; set; } = string.Empty;
 }
 
+/// <summary>A single <c>block</c> reference parameter.</summary>
+public class BtckBlockRefParams
+{
+    [JsonPropertyName("block")]
+    public RefType? Block { get; set; }
+}
+
+public class BtckBlockGetTransactionAtParams
+{
+    [JsonPropertyName("block")]
+    public RefType? Block { get; set; }
+
+    [JsonPropertyName("transaction_index")]
+    public int TransactionIndex { get; set; }
+}
+
+// ── Block Hash ────────────────────────────────────────────────────────────────
+
+public class BtckBlockHashCreateParams
+{
+    [JsonPropertyName("block_hash")]
+    public string BlockHashHex { get; set; } = string.Empty;
+}
+
+/// <summary>A single <c>block_hash</c> reference parameter.</summary>
+public class BtckBlockHashRefParams
+{
+    [JsonPropertyName("block_hash")]
+    public RefType? BlockHash { get; set; }
+}
+
+public class BtckBlockHashEqualsParams
+{
+    [JsonPropertyName("hash1")]
+    public RefType? Hash1 { get; set; }
+
+    [JsonPropertyName("hash2")]
+    public RefType? Hash2 { get; set; }
+}
+
+// ── Block Header ──────────────────────────────────────────────────────────────
+
+public class BtckBlockHeaderCreateParams
+{
+    [JsonPropertyName("raw_block_header")]
+    public string RawBlockHeader { get; set; } = string.Empty;
+}
+
+/// <summary>A single <c>header</c> reference parameter.</summary>
+public class BtckBlockHeaderRefParams
+{
+    [JsonPropertyName("header")]
+    public RefType? Header { get; set; }
+}
+
+// ── Block Tree Entry ──────────────────────────────────────────────────────────
+
 public class BtckBlockTreeEntryGetBlockHashParams
 {
     [JsonPropertyName("block_tree_entry")]
@@ -131,7 +188,8 @@ public class BtckScriptPubkeyCreateParams
     public string ScriptPubKeyHex { get; set; } = string.Empty;
 }
 
-public class BtckScriptPubkeyDestroyParams
+/// <summary>A single <c>script_pubkey</c> reference parameter.</summary>
+public class BtckScriptPubkeyRefParams
 {
     [JsonPropertyName("script_pubkey")]
     public RefType? ScriptPubKey { get; set; }
@@ -158,6 +216,12 @@ public class BtckScriptPubkeyVerifyParams
     public JsonElement? Flags { get; set; }
 }
 
+public class BtckScriptPubkeyDestroyParams
+{
+    [JsonPropertyName("script_pubkey")]
+    public RefType? ScriptPubKey { get; set; }
+}
+
 // ── Transaction ───────────────────────────────────────────────────────────────
 
 public class BtckTransactionCreateParams
@@ -166,10 +230,71 @@ public class BtckTransactionCreateParams
     public string RawTransaction { get; set; } = string.Empty;
 }
 
+/// <summary>A single <c>transaction</c> reference parameter.</summary>
+public class BtckTransactionRefParams
+{
+    [JsonPropertyName("transaction")]
+    public RefType? Transaction { get; set; }
+}
+
+public class BtckTransactionGetInputAtParams
+{
+    [JsonPropertyName("transaction")]
+    public RefType? Transaction { get; set; }
+
+    [JsonPropertyName("input_index")]
+    public int InputIndex { get; set; }
+}
+
+public class BtckTransactionGetOutputAtParams
+{
+    [JsonPropertyName("transaction")]
+    public RefType? Transaction { get; set; }
+
+    [JsonPropertyName("output_index")]
+    public int OutputIndex { get; set; }
+}
+
 public class BtckTransactionDestroyParams
 {
     [JsonPropertyName("transaction")]
     public RefType? Transaction { get; set; }
+}
+
+// ── Transaction Input ─────────────────────────────────────────────────────────
+
+/// <summary>A single <c>transaction_input</c> reference parameter.</summary>
+public class BtckTransactionInputRefParams
+{
+    [JsonPropertyName("transaction_input")]
+    public RefType? TransactionInput { get; set; }
+}
+
+// ── Transaction Out Point ─────────────────────────────────────────────────────
+
+/// <summary>A single <c>transaction_out_point</c> reference parameter.</summary>
+public class BtckTransactionOutPointRefParams
+{
+    [JsonPropertyName("transaction_out_point")]
+    public RefType? TransactionOutPoint { get; set; }
+}
+
+// ── Txid ──────────────────────────────────────────────────────────────────────
+
+/// <summary>A single <c>txid</c> reference parameter.</summary>
+public class BtckTxidRefParams
+{
+    [JsonPropertyName("txid")]
+    public RefType? Txid { get; set; }
+}
+
+public class BtckTxidEqualsParams
+{
+    [JsonPropertyName("txid1")]
+    public RefType? Txid1 { get; set; }
+
+    [JsonPropertyName("txid2")]
+    public RefType? Txid2 { get; set; }
 }
 
 // ── Transaction Output ────────────────────────────────────────────────────────
@@ -181,6 +306,13 @@ public class BtckTransactionOutputCreateParams
 
     [JsonPropertyName("amount")]
     public long Amount { get; set; }
+}
+
+/// <summary>A single <c>transaction_output</c> reference parameter.</summary>
+public class BtckTransactionOutputRefParams
+{
+    [JsonPropertyName("transaction_output")]
+    public RefType? TransactionOutput { get; set; }
 }
 
 public class BtckTransactionOutputDestroyParams

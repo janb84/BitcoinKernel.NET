@@ -56,6 +56,39 @@ public sealed class ScriptPubKey : IDisposable
 
     internal IntPtr Handle => _handle;
 
+    /// <summary>
+    /// Serializes this script pubkey to bytes.
+    /// </summary>
+    public byte[] ToBytes()
+    {
+        var bytes = new List<byte>();
+        NativeMethods.WriteBytes writer = (data, len, _) =>
+        {
+            var buffer = new byte[len];
+            System.Runtime.InteropServices.Marshal.Copy(data, buffer, 0, (int)len);
+            bytes.AddRange(buffer);
+            return 0;
+        };
+
+        int result = NativeMethods.ScriptPubkeyToBytes(_handle, writer, IntPtr.Zero);
+        if (result != 0)
+            throw new TransactionException("Failed to serialize script pubkey");
+
+        return bytes.ToArray();
+    }
+
+    /// <summary>
+    /// Creates an owned copy of this script pubkey.
+    /// </summary>
+    public ScriptPubKey Copy()
+    {
+        var copy = NativeMethods.ScriptPubkeyCopy(_handle);
+        if (copy == IntPtr.Zero)
+            throw new TransactionException("Failed to copy script pubkey");
+
+        return new ScriptPubKey(copy, ownsHandle: true);
+    }
+
     public void Dispose()
     {
         if (!_disposed && _handle != IntPtr.Zero)

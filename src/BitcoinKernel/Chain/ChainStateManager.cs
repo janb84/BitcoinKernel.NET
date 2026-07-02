@@ -88,14 +88,15 @@ public sealed class ChainstateManager : IDisposable
         ThrowIfDisposed();
         ArgumentNullException.ThrowIfNull(header);
 
-        using var state = new BlockValidationState();
-        int result = NativeMethods.ChainstateManagerProcessBlockHeader(
-            _handle,
-            header.Handle,
-            state.Handle);
+        // The native call returns a newly-allocated validation state (owned here).
+        var statePtr = NativeMethods.ChainstateManagerProcessBlockHeader(_handle, header.Handle);
+        if (statePtr == IntPtr.Zero)
+        {
+            throw new ChainstateManagerException("Failed to process block header");
+        }
 
-        validationState = state.Copy();
-        return result == 0;
+        validationState = new BlockValidationState(statePtr);
+        return validationState.ValidationMode == Interop.Enums.ValidationMode.VALID;
     }
 
     /// <summary>

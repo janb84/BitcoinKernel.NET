@@ -38,16 +38,16 @@ class Program
         {
             var chain = chainstate.GetActiveChain();
             Console.WriteLine($"   Chain height: {chain.Height}");
-            Console.WriteLine($"   Genesis hash: {Convert.ToHexString(chain.GetGenesis().GetBlockHash())}");
+            Console.WriteLine($"   Genesis hash: {Convert.ToHexString(chain.GetGenesis().GetHash())}");
 
             if (chain.Height > 0)
             {
                 var tip = chain.GetTip();
-                Console.WriteLine($"   Tip hash: {Convert.ToHexString(tip.GetBlockHash())}");
+                Console.WriteLine($"   Tip hash: {Convert.ToHexString(tip.GetHash())}");
 
                 var genesis = chain.GetBlockByHeight(0);
                 if (genesis != null)
-                    Console.WriteLine($"   Block 0 hash: {Convert.ToHexString(genesis.GetBlockHash())}");
+                    Console.WriteLine($"   Block 0 hash: {Convert.ToHexString(genesis.GetHash())}");
             }
 
             Console.WriteLine("   Chain queries working");

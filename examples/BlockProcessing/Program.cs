@@ -59,7 +59,7 @@ class Program
                     var activeChain = chainstate.GetActiveChain();
                     Console.WriteLine($"Block processed! Chain height: {activeChain.Height}");
                     var tip = activeChain.GetTip();
-                    Console.WriteLine($"  - Tip: {BitConverter.ToString(tip.GetBlockHash()).Replace("-", "")}");
+                    Console.WriteLine($"  - Tip: {BitConverter.ToString(tip.GetHash()).Replace("-", "")}");
                 }
                 else
                 {

@@ -175,13 +175,261 @@ public sealed class MethodDispatcher : IDisposable
         }
     }
 
-    public Response BlockTreeEntryGetBlockHash(string id, BtckBlockTreeEntryGetBlockHashParams p)
+    public Response BlockGetHash(string id, string? refName, BtckBlockRefParams p)
     {
+        if (refName == null) return RefError(id);
+        if (p.Block?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Block>(r).GetBlockHash());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockGetHeader(string id, string? refName, BtckBlockRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Block?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Block>(r).GetHeader());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockCopy(string id, string? refName, BtckBlockRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Block?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Block>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockCountTransactions(string id, BtckBlockRefParams p)
+    {
+        if (p.Block?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<Block>(r).TransactionCount);
+    }
+
+    public Response BlockGetTransactionAt(string id, string? refName, BtckBlockGetTransactionAtParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Block?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            var tx = Get<Block>(r).GetTransaction(p.TransactionIndex);
+            if (tx == null) return Responses.EmptyError(id);
+            _registry.Register(refName, tx);
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockToBytes(string id, BtckBlockRefParams p)
+    {
+        if (p.Block?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<Block>(r).ToBytes()));
+    }
+
+    public Response BlockDestroy(string id, BtckBlockRefParams p)
+    {
+        if (p.Block?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Block Hash ────────────────────────────────────────────────────────────
+
+    public Response BlockHashCreate(string id, string? refName, BtckBlockHashCreateParams p)
+    {
+        if (refName == null) return RefError(id);
+
+        try
+        {
+            var hash = BlockHash.FromBytes(Convert.FromHexString(p.BlockHashHex));
+            _registry.Register(refName, hash);
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHashToBytes(string id, BtckBlockHashRefParams p)
+    {
+        if (p.BlockHash?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<BlockHash>(r).ToBytes()));
+    }
+
+    public Response BlockHashEquals(string id, BtckBlockHashEqualsParams p)
+    {
+        if (p.Hash1?.Ref is not { } r1) return RefError(id);
+        if (p.Hash2?.Ref is not { } r2) return RefError(id);
+        return Responses.Ok(id, Get<BlockHash>(r1).Equals(Get<BlockHash>(r2)));
+    }
+
+    public Response BlockHashCopy(string id, string? refName, BtckBlockHashRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.BlockHash?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<BlockHash>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHashDestroy(string id, BtckBlockHashRefParams p)
+    {
+        if (p.BlockHash?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Block Header ──────────────────────────────────────────────────────────
+
+    public Response BlockHeaderCreate(string id, string? refName, BtckBlockHeaderCreateParams p)
+    {
+        if (refName == null) return RefError(id);
+
+        try
+        {
+            var header = BlockHeader.FromBytes(Convert.FromHexString(p.RawBlockHeader));
+            _registry.Register(refName, header);
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHeaderToBytes(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<BlockHeader>(r).ToBytes()));
+    }
+
+    public Response BlockHeaderGetHash(string id, string? refName, BtckBlockHeaderRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Header?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<BlockHeader>(r).GetBlockHash());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHeaderGetPrevHash(string id, string? refName, BtckBlockHeaderRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Header?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<BlockHeader>(r).GetPrevBlockHash());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHeaderGetVersion(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<BlockHeader>(r).Version);
+    }
+
+    public Response BlockHeaderGetTimestamp(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<BlockHeader>(r).Timestamp);
+    }
+
+    public Response BlockHeaderGetBits(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<BlockHeader>(r).Bits);
+    }
+
+    public Response BlockHeaderGetNonce(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<BlockHeader>(r).Nonce);
+    }
+
+    public Response BlockHeaderCopy(string id, string? refName, BtckBlockHeaderRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Header?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<BlockHeader>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response BlockHeaderDestroy(string id, BtckBlockHeaderRefParams p)
+    {
+        if (p.Header?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Block Tree Entry ──────────────────────────────────────────────────────
+
+    public Response BlockTreeEntryGetBlockHash(string id, string? refName, BtckBlockTreeEntryGetBlockHashParams p)
+    {
+        if (refName == null) return RefError(id);
         if (p.BlockTreeEntry?.Ref is not { } bteRef) return RefError(id);
 
-        var hashBytes = GetVal<BlockIndex>(bteRef).GetBlockHash();
-        // Reverse bytes to get display (big-endian) order
-        return Responses.Ok(id, Convert.ToHexString(hashBytes.Reverse().ToArray()).ToLowerInvariant());
+        try
+        {
+            _registry.Register(refName, GetVal<BlockIndex>(bteRef).GetBlockHash());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
     }
 
     // ── Script Pubkey ─────────────────────────────────────────────────────────
@@ -192,7 +440,8 @@ public sealed class MethodDispatcher : IDisposable
 
         try
         {
-            var spk = ScriptPubKey.FromHex(p.ScriptPubKeyHex);
+            // Use FromBytes (not FromHex) so an empty script pubkey (empty hex) is accepted.
+            var spk = ScriptPubKey.FromBytes(Convert.FromHexString(p.ScriptPubKeyHex));
             _registry.Register(refName, spk);
             return Responses.Ref(id, refName);
         }
@@ -202,10 +451,26 @@ public sealed class MethodDispatcher : IDisposable
         }
     }
 
-    public Response ScriptPubkeyDestroy(string id, BtckScriptPubkeyDestroyParams p)
+    public Response ScriptPubkeyCopy(string id, string? refName, BtckScriptPubkeyRefParams p)
     {
-        if (p.ScriptPubKey?.Ref is { } r) _registry.Destroy(r);
-        return Responses.Null(id);
+        if (refName == null) return RefError(id);
+        if (p.ScriptPubKey?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<ScriptPubKey>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response ScriptPubkeyToBytes(string id, BtckScriptPubkeyRefParams p)
+    {
+        if (p.ScriptPubKey?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<ScriptPubKey>(r).ToBytes()));
     }
 
     public Response ScriptPubkeyVerify(string id, BtckScriptPubkeyVerifyParams p)
@@ -244,6 +509,12 @@ public sealed class MethodDispatcher : IDisposable
         }
     }
 
+    public Response ScriptPubkeyDestroy(string id, BtckScriptPubkeyDestroyParams p)
+    {
+        if (p.ScriptPubKey?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
     // ── Transaction ───────────────────────────────────────────────────────────
 
     public Response TransactionCreate(string id, string? refName, BtckTransactionCreateParams p)
@@ -262,9 +533,214 @@ public sealed class MethodDispatcher : IDisposable
         }
     }
 
+    public Response TransactionCopy(string id, string? refName, BtckTransactionRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Transaction>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionCountInputs(string id, BtckTransactionRefParams p)
+    {
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<Transaction>(r).InputCount);
+    }
+
+    public Response TransactionCountOutputs(string id, BtckTransactionRefParams p)
+    {
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<Transaction>(r).OutputCount);
+    }
+
+    public Response TransactionGetTxid(string id, string? refName, BtckTransactionRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Transaction>(r).GetTxid());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionToBytes(string id, BtckTransactionRefParams p)
+    {
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<Transaction>(r).ToBytes()));
+    }
+
+    public Response TransactionGetInputAt(string id, string? refName, BtckTransactionGetInputAtParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Transaction>(r).GetInputAt(p.InputIndex));
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionGetOutputAt(string id, string? refName, BtckTransactionGetOutputAtParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Transaction?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Transaction>(r).GetOutputAt(p.OutputIndex));
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
     public Response TransactionDestroy(string id, BtckTransactionDestroyParams p)
     {
         if (p.Transaction?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Transaction Input ─────────────────────────────────────────────────────
+
+    public Response TransactionInputGetOutPoint(string id, string? refName, BtckTransactionInputRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionInput?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<TransactionInput>(r).GetOutPoint());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionInputCopy(string id, string? refName, BtckTransactionInputRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionInput?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<TransactionInput>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionInputDestroy(string id, BtckTransactionInputRefParams p)
+    {
+        if (p.TransactionInput?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Transaction Out Point ─────────────────────────────────────────────────
+
+    public Response TransactionOutPointGetIndex(string id, BtckTransactionOutPointRefParams p)
+    {
+        if (p.TransactionOutPoint?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<OutPoint>(r).Index);
+    }
+
+    public Response TransactionOutPointGetTxid(string id, string? refName, BtckTransactionOutPointRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionOutPoint?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<OutPoint>(r).GetTxid());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionOutPointCopy(string id, string? refName, BtckTransactionOutPointRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionOutPoint?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<OutPoint>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionOutPointDestroy(string id, BtckTransactionOutPointRefParams p)
+    {
+        if (p.TransactionOutPoint?.Ref is { } r) _registry.Destroy(r);
+        return Responses.Null(id);
+    }
+
+    // ── Txid ──────────────────────────────────────────────────────────────────
+
+    public Response TxidToBytes(string id, BtckTxidRefParams p)
+    {
+        if (p.Txid?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Hex(Get<Txid>(r).ToBytes()));
+    }
+
+    public Response TxidEquals(string id, BtckTxidEqualsParams p)
+    {
+        if (p.Txid1?.Ref is not { } r1) return RefError(id);
+        if (p.Txid2?.Ref is not { } r2) return RefError(id);
+        return Responses.Ok(id, Get<Txid>(r1).Equals(Get<Txid>(r2)));
+    }
+
+    public Response TxidCopy(string id, string? refName, BtckTxidRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.Txid?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<Txid>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TxidDestroy(string id, BtckTxidRefParams p)
+    {
+        if (p.Txid?.Ref is { } r) _registry.Destroy(r);
         return Responses.Null(id);
     }
 
@@ -285,6 +761,44 @@ public sealed class MethodDispatcher : IDisposable
         catch
         {
             return Responses.Null(id);
+        }
+    }
+
+    public Response TransactionOutputCopy(string id, string? refName, BtckTransactionOutputRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionOutput?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<TxOut>(r).Copy());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
+        }
+    }
+
+    public Response TransactionOutputGetAmount(string id, BtckTransactionOutputRefParams p)
+    {
+        if (p.TransactionOutput?.Ref is not { } r) return RefError(id);
+        return Responses.Ok(id, Get<TxOut>(r).Amount);
+    }
+
+    public Response TransactionOutputGetScriptPubkey(string id, string? refName, BtckTransactionOutputRefParams p)
+    {
+        if (refName == null) return RefError(id);
+        if (p.TransactionOutput?.Ref is not { } r) return RefError(id);
+
+        try
+        {
+            _registry.Register(refName, Get<TxOut>(r).GetScriptPubkey());
+            return Responses.Ref(id, refName);
+        }
+        catch
+        {
+            return Responses.EmptyError(id);
         }
     }
 
@@ -330,6 +844,8 @@ public sealed class MethodDispatcher : IDisposable
     }
 
     // ── Parsing helpers ───────────────────────────────────────────────────────
+
+    private static string Hex(byte[] bytes) => Convert.ToHexString(bytes).ToLowerInvariant();
 
     private static ChainType ParseChainType(string s) => s switch
     {
