@@ -69,7 +69,7 @@ public class BlockTreeEntryTests : IDisposable
     public void Equals_SameBlock_ReturnsTrue()
     {
         SetupWithBlocks();
-        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetBlockHash();
+        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetHash();
 
         var entry1 = _blockProcessor!.GetBlockTreeEntry(tipHash);
         var entry2 = _blockProcessor.GetBlockTreeEntry(tipHash);
@@ -83,8 +83,8 @@ public class BlockTreeEntryTests : IDisposable
         SetupWithBlocks();
         var chain = _chainstateManager!.GetActiveChain();
 
-        var tipEntry = _blockProcessor!.GetBlockTreeEntry(chain.GetTip().GetBlockHash());
-        var genesisEntry = _blockProcessor.GetBlockTreeEntry(chain.GetBlockByHeight(0)!.GetBlockHash());
+        var tipEntry = _blockProcessor!.GetBlockTreeEntry(chain.GetTip().GetHash());
+        var genesisEntry = _blockProcessor.GetBlockTreeEntry(chain.GetBlockByHeight(0)!.GetHash());
 
         Assert.False(tipEntry!.Equals(genesisEntry));
     }
@@ -93,7 +93,7 @@ public class BlockTreeEntryTests : IDisposable
     public void Equals_WithNull_ReturnsFalse()
     {
         SetupWithBlocks();
-        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetBlockHash();
+        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetHash();
 
         var entry = _blockProcessor!.GetBlockTreeEntry(tipHash);
 
@@ -104,7 +104,7 @@ public class BlockTreeEntryTests : IDisposable
     public void GetHashCode_EqualEntries_ReturnsSameHashCode()
     {
         SetupWithBlocks();
-        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetBlockHash();
+        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetHash();
 
         var entry1 = _blockProcessor!.GetBlockTreeEntry(tipHash);
         var entry2 = _blockProcessor.GetBlockTreeEntry(tipHash);
@@ -116,7 +116,7 @@ public class BlockTreeEntryTests : IDisposable
     public void OperatorEquals_SameBlock_ReturnsTrue()
     {
         SetupWithBlocks();
-        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetBlockHash();
+        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetHash();
 
         var entry1 = _blockProcessor!.GetBlockTreeEntry(tipHash);
         var entry2 = _blockProcessor.GetBlockTreeEntry(tipHash);
@@ -130,8 +130,8 @@ public class BlockTreeEntryTests : IDisposable
         SetupWithBlocks();
         var chain = _chainstateManager!.GetActiveChain();
 
-        var tipEntry = _blockProcessor!.GetBlockTreeEntry(chain.GetTip().GetBlockHash());
-        var genesisEntry = _blockProcessor.GetBlockTreeEntry(chain.GetBlockByHeight(0)!.GetBlockHash());
+        var tipEntry = _blockProcessor!.GetBlockTreeEntry(chain.GetTip().GetHash());
+        var genesisEntry = _blockProcessor.GetBlockTreeEntry(chain.GetBlockByHeight(0)!.GetHash());
 
         Assert.True(tipEntry != genesisEntry);
     }
@@ -140,7 +140,7 @@ public class BlockTreeEntryTests : IDisposable
     public void GetPrevious_EqualEntries_ReturnEqualPrevious()
     {
         SetupWithBlocks();
-        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetBlockHash();
+        var tipHash = _chainstateManager!.GetActiveChain().GetTip().GetHash();
 
         var entry1 = _blockProcessor!.GetBlockTreeEntry(tipHash);
         var entry2 = _blockProcessor.GetBlockTreeEntry(tipHash);

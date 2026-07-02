@@ -5,7 +5,7 @@ namespace BitcoinKernel.Primitives;
 /// <summary>
 /// Represents a block hash.
 /// </summary>
-public sealed class BlockHash : IDisposable
+public sealed class BlockHash : IDisposable, IEquatable<BlockHash>
 {
     private IntPtr _handle;
     private bool _disposed;
@@ -59,6 +59,33 @@ public sealed class BlockHash : IDisposable
         NativeMethods.BlockHashToBytes(_handle, bytes);
         return bytes;
     }
+
+    /// <summary>
+    /// Creates an owned copy of this block hash.
+    /// </summary>
+    public BlockHash Copy()
+    {
+        ThrowIfDisposed();
+        var copy = NativeMethods.BlockHashCopy(_handle);
+        if (copy == IntPtr.Zero)
+            throw new BlockException("Failed to copy block hash");
+
+        return new BlockHash(copy);
+    }
+
+    /// <summary>
+    /// Determines whether this block hash equals another.
+    /// </summary>
+    public bool Equals(BlockHash? other)
+    {
+        if (other is null) return false;
+        ThrowIfDisposed();
+        return NativeMethods.BlockHashEquals(_handle, other.Handle) != 0;
+    }
+
+    public override bool Equals(object? obj) => obj is BlockHash other && Equals(other);
+
+    public override int GetHashCode() => Convert.ToHexString(ToBytes()).GetHashCode();
 
     private void ThrowIfDisposed()
     {

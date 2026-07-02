@@ -90,19 +90,26 @@ public sealed class Transaction : IDisposable
     public int OutputCount => (int)NativeMethods.TransactionCountOutputs(_handle);
 
     /// <summary>
-    /// Gets the transaction ID (txid) as bytes.
+    /// Gets the transaction ID (txid) as a non-owning <see cref="Txid"/> object whose
+    /// lifetime is tied to this transaction.
     /// </summary>
-    /// <returns>The transaction ID as a byte array.</returns>
-    public byte[] GetTxid()
+    public Txid GetTxid()
     {
         IntPtr txidPtr = NativeMethods.TransactionGetTxid(_handle);
         if (txidPtr == IntPtr.Zero)
             throw new TransactionException("Failed to get transaction ID");
 
-        const int TxidSize = 32;
-        byte[] txid = new byte[TxidSize];
-        Marshal.Copy(txidPtr, txid, 0, TxidSize);
-        return txid;
+        return new Txid(txidPtr, ownsHandle: false);
+    }
+
+    /// <summary>
+    /// Gets the transaction ID (txid) as a 32-byte array.
+    /// </summary>
+    /// <returns>The transaction ID as a byte array.</returns>
+    public byte[] GetTxidBytes()
+    {
+        using var txid = GetTxid();
+        return txid.ToBytes();
     }
 
     /// <summary>
@@ -111,14 +118,37 @@ public sealed class Transaction : IDisposable
     /// <returns>The transaction ID as a hex string.</returns>
     public string GetTxidHex()
     {
-        byte[] txid = GetTxid();
-        return Convert.ToHexString(txid).ToLowerInvariant();
+        return Convert.ToHexString(GetTxidBytes()).ToLowerInvariant();
     }
 
+    /// <summary>
+    /// Serializes this transaction to bytes.
+    /// </summary>
+    public byte[] ToBytes()
+    {
+        var bytes = new List<byte>();
+        NativeMethods.WriteBytes writer = (data, len, _) =>
+        {
+            var buffer = new byte[len];
+            Marshal.Copy(data, buffer, 0, (int)len);
+            bytes.AddRange(buffer);
+            return 0;
+        };
 
+        int result = NativeMethods.TransactionToBytes(_handle, writer, IntPtr.Zero);
+        if (result != 0)
+            throw new TransactionException("Failed to serialize transaction");
+
+        return bytes.ToArray();
+    }
+
+    /// <summary>
+    /// Gets the transaction input at the specified index as a non-owning
+    /// <see cref="TransactionInput"/> whose lifetime is tied to this transaction.
+    /// </summary>
     /// <exception cref="ArgumentOutOfRangeException">Thrown when index is out of range.</exception>
     /// <exception cref="TransactionException">Thrown when input retrieval fails.</exception>
-    public IntPtr GetInputAt(int index)
+    public TransactionInput GetInputAt(int index)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(index);
         ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, InputCount);
@@ -127,7 +157,7 @@ public sealed class Transaction : IDisposable
         if (inputPtr == IntPtr.Zero)
             throw new TransactionException($"Failed to get input at index {index}");
 
-        return inputPtr;
+        return new TransactionInput(inputPtr, ownsHandle: false);
     }
 
     /// <returns>The TxOut at the specified index.</returns>

@@ -49,9 +49,27 @@ public sealed class BlockHeader : IDisposable
     }
 
     /// <summary>
-    /// Gets the block hash of this header.
+    /// Gets the block hash of this header as a 32-byte array.
     /// </summary>
     public byte[] GetHash()
+    {
+        using var blockHash = GetBlockHash();
+        return blockHash.ToBytes();
+    }
+
+    /// <summary>
+    /// Gets the previous block hash from this header as a 32-byte array.
+    /// </summary>
+    public byte[] GetPrevHash()
+    {
+        using var prevHash = GetPrevBlockHash();
+        return prevHash.ToBytes();
+    }
+
+    /// <summary>
+    /// Gets the block hash of this header as an owned <see cref="BlockHash"/> object.
+    /// </summary>
+    public BlockHash GetBlockHash()
     {
         ThrowIfDisposed();
         var hashPtr = NativeMethods.BlockHeaderGetHash(_handle);
@@ -60,14 +78,13 @@ public sealed class BlockHeader : IDisposable
             throw new BlockException("Failed to get block hash from header");
         }
 
-        using var blockHash = new BlockHash(hashPtr);
-        return blockHash.ToBytes();
+        return new BlockHash(hashPtr);
     }
 
     /// <summary>
-    /// Gets the previous block hash from this header.
+    /// Gets the previous block hash of this header as an owned <see cref="BlockHash"/> object.
     /// </summary>
-    public byte[] GetPrevHash()
+    public BlockHash GetPrevBlockHash()
     {
         ThrowIfDisposed();
         var hashPtr = NativeMethods.BlockHeaderGetPrevHash(_handle);
@@ -76,10 +93,46 @@ public sealed class BlockHeader : IDisposable
             throw new BlockException("Failed to get previous block hash from header");
         }
 
-        // The hash pointer is unowned and only valid for the lifetime of the header
-        var bytes = new byte[32];
-        NativeMethods.BlockHashToBytes(hashPtr, bytes);
+        // The returned pointer is unowned (tied to the header lifetime), so copy it
+        // into an independently owned block hash.
+        var copy = NativeMethods.BlockHashCopy(hashPtr);
+        if (copy == IntPtr.Zero)
+        {
+            throw new BlockException("Failed to copy previous block hash");
+        }
+
+        return new BlockHash(copy);
+    }
+
+    /// <summary>
+    /// Serializes this header to its 80-byte representation.
+    /// </summary>
+    public byte[] ToBytes()
+    {
+        ThrowIfDisposed();
+        var bytes = new byte[80];
+        int result = NativeMethods.BlockHeaderToBytes(_handle, bytes);
+        if (result != 0)
+        {
+            throw new BlockException("Failed to serialize block header");
+        }
+
         return bytes;
+    }
+
+    /// <summary>
+    /// Creates an owned copy of this block header.
+    /// </summary>
+    public BlockHeader Copy()
+    {
+        ThrowIfDisposed();
+        var copy = NativeMethods.BlockHeaderCopy(_handle);
+        if (copy == IntPtr.Zero)
+        {
+            throw new BlockException("Failed to copy block header");
+        }
+
+        return new BlockHeader(copy);
     }
 
     /// <summary>

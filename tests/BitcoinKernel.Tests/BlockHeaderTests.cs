@@ -223,7 +223,7 @@ public class BlockHeaderTests : IDisposable
 
         var chain = _chainstateManager!.GetActiveChain();
         var tip = chain.GetTip();
-        var tipHash = tip.GetBlockHash();
+        var tipHash = tip.GetHash();
 
         using var header = tip.GetBlockHeader();
         var headerHash = header.GetHash();
@@ -241,7 +241,7 @@ public class BlockHeaderTests : IDisposable
         var tip = chain.GetTip();
 
         Assert.Equal(tip.Height, bestIndex.Height);
-        Assert.Equal(tip.GetBlockHash(), bestIndex.GetBlockHash());
+        Assert.Equal(tip.GetHash(), bestIndex.GetHash());
     }
 
     [Fact]

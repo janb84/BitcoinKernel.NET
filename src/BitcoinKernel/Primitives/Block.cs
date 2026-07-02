@@ -57,9 +57,18 @@ public sealed class Block : IDisposable
     }
 
     /// <summary>
-    /// Gets the block hash.
+    /// Gets the block hash as a 32-byte array.
     /// </summary>
     public byte[] GetHash()
+    {
+        using var blockHash = GetBlockHash();
+        return blockHash.ToBytes();
+    }
+
+    /// <summary>
+    /// Gets the block hash as an owned <see cref="BlockHash"/> object.
+    /// </summary>
+    public BlockHash GetBlockHash()
     {
         ThrowIfDisposed();
         var hashPtr = NativeMethods.BlockGetHash(_handle);
@@ -68,8 +77,22 @@ public sealed class Block : IDisposable
             throw new BlockException("Failed to get block hash");
         }
 
-        using var blockHash = new BlockHash(hashPtr);
-        return blockHash.ToBytes();
+        return new BlockHash(hashPtr);
+    }
+
+    /// <summary>
+    /// Creates an owned copy of this block.
+    /// </summary>
+    public Block Copy()
+    {
+        ThrowIfDisposed();
+        var copy = NativeMethods.BlockCopy(_handle);
+        if (copy == IntPtr.Zero)
+        {
+            throw new BlockException("Failed to copy block");
+        }
+
+        return new Block(copy);
     }
 
     /// <summary>
@@ -93,19 +116,19 @@ public sealed class Block : IDisposable
     public byte[] ToBytes()
     {
         ThrowIfDisposed();
-        byte[]? result = null;
+        var result = new List<byte>();
 
         NativeMethods.BlockToBytes(_handle, (data, size, userData) =>
         {
             unsafe
             {
                 var span = new ReadOnlySpan<byte>((byte*)data, (int)size);
-                result = span.ToArray();
+                result.AddRange(span);
             }
             return 0;
         }, IntPtr.Zero);
 
-        return result ?? Array.Empty<byte>();
+        return result.ToArray();
     }
 
     /// <summary>
