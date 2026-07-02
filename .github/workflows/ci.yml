@@ -1,24 +1,130 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+  push:
+    branches:
+      - '**'
+    tags-ignore:
+      - '**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
+  build-libbitcoinkernel:
+    name: Build libbitcoinkernel (${{ matrix.rid }})
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+            libname: libbitcoinkernel.so
+          - os: macos-latest
+            rid: osx-x64
+            libname: libbitcoinkernel.dylib
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v7
+
+    - name: Read pinned Bitcoin Core commit
+      id: bitcoin
+      run: echo "commit=$(tr -d '[:space:]' < native/BITCOIN_COMMIT)" >> "$GITHUB_OUTPUT"
+
+    - name: Cache built library
+      id: cache
+      uses: actions/cache@v6.1.0
+      with:
+        path: kernel-out
+        key: libbitcoinkernel-${{ matrix.rid }}-${{ steps.bitcoin.outputs.commit }}
+
+    - name: Checkout Bitcoin Core
+      if: steps.cache.outputs.cache-hit != 'true'
+      uses: actions/checkout@v7
+      with:
+        repository: bitcoin/bitcoin
+        ref: ${{ steps.bitcoin.outputs.commit }}
+        path: bitcoin
+
+    - name: Install build dependencies (Linux)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'Linux'
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ninja-build libboost-dev
+
+    - name: Install build dependencies (macOS)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'macOS'
+      run: brew install ninja boost
+
+    - name: Build libbitcoinkernel
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        cmake -B bitcoin/build -S bitcoin -G Ninja \
+          -DCMAKE_BUILD_TYPE=Release \
+          -DBUILD_SHARED_LIBS=ON \
+          -DBUILD_KERNEL_LIB=ON \
+          -DBUILD_KERNEL_TEST=ON \
+          -DBUILD_UTIL_CHAINSTATE=ON \
+          -DBUILD_BITCOIN_BIN=OFF \
+          -DBUILD_DAEMON=OFF \
+          -DBUILD_CLI=OFF \
+          -DBUILD_TX=OFF \
+          -DBUILD_UTIL=OFF \
+          -DBUILD_WALLET_TOOL=OFF \
+          -DBUILD_TESTS=OFF \
+          -DBUILD_BENCH=OFF \
+          -DBUILD_FUZZ_BINARY=OFF \
+          -DENABLE_WALLET=OFF \
+          -DENABLE_IPC=OFF \
+          -DENABLE_EXTERNAL_SIGNER=OFF \
+          -DCMAKE_INSTALL_LIBDIR=lib
+        cmake --build bitcoin/build --target bitcoinkernel --parallel
+        mkdir -p kernel-out
+        LIB_PATH=$(find bitcoin/build \( -type f -o -type l \) -name '${{ matrix.libname }}' | head -n1)
+        if [ -z "$LIB_PATH" ]; then
+          echo "::error::${{ matrix.libname }} not found in build output:"
+          find bitcoin/build -name 'libbitcoinkernel*'
+          exit 1
+        fi
+        # Dereference symlinks so versioned libs end up as a single real file
+        cp -L "$LIB_PATH" kernel-out/${{ matrix.libname }}
+
+    - name: Upload library artifact
+      uses: actions/upload-artifact@v7
+      with:
+        name: libbitcoinkernel-${{ matrix.rid }}
+        path: kernel-out/${{ matrix.libname }}
+        if-no-files-found: error
+
   build-and-test:
     name: Build and Test
     runs-on: ${{ matrix.os }}
+    needs: build-libbitcoinkernel
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
         dotnet-version: ['10.0.x']
+        include:
+          - os: ubuntu-latest
+            rid: linux-x64
+          - os: macos-latest
+            rid: osx-x64
       fail-fast: false
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
+
+    - name: Download libbitcoinkernel
+      uses: actions/download-artifact@v8
+      with:
+        name: libbitcoinkernel-${{ matrix.rid }}
+        path: native/${{ matrix.rid }}
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v5
@@ -35,7 +141,7 @@ jobs:
       run: dotnet test --no-restore --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
 
     - name: Upload dotnet test results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: dotnet-results--${{ matrix.os }}
         path: TestResults--${{ matrix.os }}
@@ -47,10 +153,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v5.4.0
       with:
         dotnet-version: '10.0.x'
 
@@ -66,10 +172,10 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v5.4.0
       with:
         dotnet-version: '10.0.x'
 
@@ -92,8 +198,10 @@ jobs:
         include:
           - os: macos-latest
             platform: darwin_arm64
+            rid: osx-x64
           - os: ubuntu-latest
             platform: linux_amd64
+            rid: linux-x64
 
     env:
       TEST_VERSION: '0.0.4-alpha.pr14.5'
@@ -102,10 +210,16 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
+
+    - name: Download libbitcoinkernel
+      uses: actions/download-artifact@v8
+      with:
+        name: libbitcoinkernel-${{ matrix.rid }}
+        path: native/${{ matrix.rid }}
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v5.4.0
       with:
         dotnet-version: '10.0.x'
 

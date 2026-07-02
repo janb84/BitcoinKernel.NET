@@ -106,6 +106,8 @@ This package includes pre-built `libbitcoinkernel` binaries for:
 
 For other platforms, you'll need to build libbitcoinkernel from the [Bitcoin Core repository](https://github.com/bitcoin/bitcoin).
 
+In CI, `libbitcoinkernel` is built from source at the Bitcoin Core commit pinned in [`native/BITCOIN_COMMIT`](native/BITCOIN_COMMIT) and used for the test and conformance jobs. To move to a newer kernel API, update that file to the desired commit hash; the build is cached per commit, so only the first run after a bump rebuilds Bitcoin Core.
+
 ## Documentation
 
 - [API Documentation](docs/) (coming soon)
