@@ -150,14 +150,14 @@ internal static class NativeMethods
     public static extern IntPtr ChainstateManagerGetBestEntry(IntPtr manager);
 
     /// <summary>
-    /// Processes and validates a block header.
-    /// Returns 0 on success.
+    /// Processes and validates a block header. Returns a newly-allocated
+    /// btck_BlockValidationState (owned by the caller) describing the outcome,
+    /// or IntPtr.Zero on failure.
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_process_block_header")]
-    public static extern int ChainstateManagerProcessBlockHeader(
+    public static extern IntPtr ChainstateManagerProcessBlockHeader(
         IntPtr manager,
-        IntPtr header,
-        IntPtr block_validation_state);
+        IntPtr header);
 
     /// <summary>
     /// Imports blocks from an array of file paths.

@@ -1,6 +1,7 @@
 namespace BitcoinKernel.Interop.Enums;
 
-public enum LogLevel : uint
+// btck_LogLevel is a uint8_t in bitcoinkernel.h.
+public enum LogLevel : byte
 {
     TRACE = 0,
     DEBUG = 1,

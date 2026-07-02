@@ -1,6 +1,7 @@
 namespace BitcoinKernel.Interop.Enums;
 
-public enum ChainType : uint
+// btck_ChainType is a uint8_t in bitcoinkernel.h.
+public enum ChainType : byte
 {
     MAINNET = 0,
     TESTNET = 1,
