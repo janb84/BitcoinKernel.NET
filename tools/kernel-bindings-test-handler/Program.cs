@@ -113,9 +113,99 @@ class Program
                     dispatcher.BlockCreate(id, request.Ref,
                         Deserialize<BtckBlockCreateParams>(request.Params, opts)),
 
+                "btck_block_get_hash" =>
+                    dispatcher.BlockGetHash(id, request.Ref,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
+                "btck_block_get_header" =>
+                    dispatcher.BlockGetHeader(id, request.Ref,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
+                "btck_block_copy" =>
+                    dispatcher.BlockCopy(id, request.Ref,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
+                "btck_block_count_transactions" =>
+                    dispatcher.BlockCountTransactions(id,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
+                "btck_block_get_transaction_at" =>
+                    dispatcher.BlockGetTransactionAt(id, request.Ref,
+                        Deserialize<BtckBlockGetTransactionAtParams>(request.Params, opts)),
+
+                "btck_block_to_bytes" =>
+                    dispatcher.BlockToBytes(id,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
+                "btck_block_destroy" =>
+                    dispatcher.BlockDestroy(id,
+                        Deserialize<BtckBlockRefParams>(request.Params, opts)),
+
                 "btck_block_tree_entry_get_block_hash" =>
-                    dispatcher.BlockTreeEntryGetBlockHash(id,
+                    dispatcher.BlockTreeEntryGetBlockHash(id, request.Ref,
                         Deserialize<BtckBlockTreeEntryGetBlockHashParams>(request.Params, opts)),
+
+                // ── Block Hash ────────────────────────────────────────────────
+                "btck_block_hash_create" =>
+                    dispatcher.BlockHashCreate(id, request.Ref,
+                        Deserialize<BtckBlockHashCreateParams>(request.Params, opts)),
+
+                "btck_block_hash_to_bytes" =>
+                    dispatcher.BlockHashToBytes(id,
+                        Deserialize<BtckBlockHashRefParams>(request.Params, opts)),
+
+                "btck_block_hash_equals" =>
+                    dispatcher.BlockHashEquals(id,
+                        Deserialize<BtckBlockHashEqualsParams>(request.Params, opts)),
+
+                "btck_block_hash_copy" =>
+                    dispatcher.BlockHashCopy(id, request.Ref,
+                        Deserialize<BtckBlockHashRefParams>(request.Params, opts)),
+
+                "btck_block_hash_destroy" =>
+                    dispatcher.BlockHashDestroy(id,
+                        Deserialize<BtckBlockHashRefParams>(request.Params, opts)),
+
+                // ── Block Header ──────────────────────────────────────────────
+                "btck_block_header_create" =>
+                    dispatcher.BlockHeaderCreate(id, request.Ref,
+                        Deserialize<BtckBlockHeaderCreateParams>(request.Params, opts)),
+
+                "btck_block_header_to_bytes" =>
+                    dispatcher.BlockHeaderToBytes(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_hash" =>
+                    dispatcher.BlockHeaderGetHash(id, request.Ref,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_prev_hash" =>
+                    dispatcher.BlockHeaderGetPrevHash(id, request.Ref,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_version" =>
+                    dispatcher.BlockHeaderGetVersion(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_timestamp" =>
+                    dispatcher.BlockHeaderGetTimestamp(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_bits" =>
+                    dispatcher.BlockHeaderGetBits(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_get_nonce" =>
+                    dispatcher.BlockHeaderGetNonce(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_copy" =>
+                    dispatcher.BlockHeaderCopy(id, request.Ref,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
+
+                "btck_block_header_destroy" =>
+                    dispatcher.BlockHeaderDestroy(id,
+                        Deserialize<BtckBlockHeaderRefParams>(request.Params, opts)),
 
                 // ── Script Pubkey ─────────────────────────────────────────────
                 "btck_script_pubkey_create" =>
@@ -125,6 +215,14 @@ class Program
                 "btck_script_pubkey_destroy" =>
                     dispatcher.ScriptPubkeyDestroy(id,
                         Deserialize<BtckScriptPubkeyDestroyParams>(request.Params, opts)),
+
+                "btck_script_pubkey_copy" =>
+                    dispatcher.ScriptPubkeyCopy(id, request.Ref,
+                        Deserialize<BtckScriptPubkeyRefParams>(request.Params, opts)),
+
+                "btck_script_pubkey_to_bytes" =>
+                    dispatcher.ScriptPubkeyToBytes(id,
+                        Deserialize<BtckScriptPubkeyRefParams>(request.Params, opts)),
 
                 "btck_script_pubkey_verify" =>
                     dispatcher.ScriptPubkeyVerify(id,
@@ -139,6 +237,81 @@ class Program
                     dispatcher.TransactionDestroy(id,
                         Deserialize<BtckTransactionDestroyParams>(request.Params, opts)),
 
+                "btck_transaction_copy" =>
+                    dispatcher.TransactionCopy(id, request.Ref,
+                        Deserialize<BtckTransactionRefParams>(request.Params, opts)),
+
+                "btck_transaction_count_inputs" =>
+                    dispatcher.TransactionCountInputs(id,
+                        Deserialize<BtckTransactionRefParams>(request.Params, opts)),
+
+                "btck_transaction_count_outputs" =>
+                    dispatcher.TransactionCountOutputs(id,
+                        Deserialize<BtckTransactionRefParams>(request.Params, opts)),
+
+                "btck_transaction_get_txid" =>
+                    dispatcher.TransactionGetTxid(id, request.Ref,
+                        Deserialize<BtckTransactionRefParams>(request.Params, opts)),
+
+                "btck_transaction_to_bytes" =>
+                    dispatcher.TransactionToBytes(id,
+                        Deserialize<BtckTransactionRefParams>(request.Params, opts)),
+
+                "btck_transaction_get_input_at" =>
+                    dispatcher.TransactionGetInputAt(id, request.Ref,
+                        Deserialize<BtckTransactionGetInputAtParams>(request.Params, opts)),
+
+                "btck_transaction_get_output_at" =>
+                    dispatcher.TransactionGetOutputAt(id, request.Ref,
+                        Deserialize<BtckTransactionGetOutputAtParams>(request.Params, opts)),
+
+                // ── Transaction Input ─────────────────────────────────────────
+                "btck_transaction_input_get_out_point" =>
+                    dispatcher.TransactionInputGetOutPoint(id, request.Ref,
+                        Deserialize<BtckTransactionInputRefParams>(request.Params, opts)),
+
+                "btck_transaction_input_copy" =>
+                    dispatcher.TransactionInputCopy(id, request.Ref,
+                        Deserialize<BtckTransactionInputRefParams>(request.Params, opts)),
+
+                "btck_transaction_input_destroy" =>
+                    dispatcher.TransactionInputDestroy(id,
+                        Deserialize<BtckTransactionInputRefParams>(request.Params, opts)),
+
+                // ── Transaction Out Point ─────────────────────────────────────
+                "btck_transaction_out_point_get_index" =>
+                    dispatcher.TransactionOutPointGetIndex(id,
+                        Deserialize<BtckTransactionOutPointRefParams>(request.Params, opts)),
+
+                "btck_transaction_out_point_get_txid" =>
+                    dispatcher.TransactionOutPointGetTxid(id, request.Ref,
+                        Deserialize<BtckTransactionOutPointRefParams>(request.Params, opts)),
+
+                "btck_transaction_out_point_copy" =>
+                    dispatcher.TransactionOutPointCopy(id, request.Ref,
+                        Deserialize<BtckTransactionOutPointRefParams>(request.Params, opts)),
+
+                "btck_transaction_out_point_destroy" =>
+                    dispatcher.TransactionOutPointDestroy(id,
+                        Deserialize<BtckTransactionOutPointRefParams>(request.Params, opts)),
+
+                // ── Txid ──────────────────────────────────────────────────────
+                "btck_txid_to_bytes" =>
+                    dispatcher.TxidToBytes(id,
+                        Deserialize<BtckTxidRefParams>(request.Params, opts)),
+
+                "btck_txid_equals" =>
+                    dispatcher.TxidEquals(id,
+                        Deserialize<BtckTxidEqualsParams>(request.Params, opts)),
+
+                "btck_txid_copy" =>
+                    dispatcher.TxidCopy(id, request.Ref,
+                        Deserialize<BtckTxidRefParams>(request.Params, opts)),
+
+                "btck_txid_destroy" =>
+                    dispatcher.TxidDestroy(id,
+                        Deserialize<BtckTxidRefParams>(request.Params, opts)),
+
                 // ── Transaction Output ────────────────────────────────────────
                 "btck_transaction_output_create" =>
                     dispatcher.TransactionOutputCreate(id, request.Ref,
@@ -147,6 +320,18 @@ class Program
                 "btck_transaction_output_destroy" =>
                     dispatcher.TransactionOutputDestroy(id,
                         Deserialize<BtckTransactionOutputDestroyParams>(request.Params, opts)),
+
+                "btck_transaction_output_copy" =>
+                    dispatcher.TransactionOutputCopy(id, request.Ref,
+                        Deserialize<BtckTransactionOutputRefParams>(request.Params, opts)),
+
+                "btck_transaction_output_get_amount" =>
+                    dispatcher.TransactionOutputGetAmount(id,
+                        Deserialize<BtckTransactionOutputRefParams>(request.Params, opts)),
+
+                "btck_transaction_output_get_script_pubkey" =>
+                    dispatcher.TransactionOutputGetScriptPubkey(id, request.Ref,
+                        Deserialize<BtckTransactionOutputRefParams>(request.Params, opts)),
 
                 // ── Precomputed Transaction Data ──────────────────────────────
                 "btck_precomputed_transaction_data_create" =>
