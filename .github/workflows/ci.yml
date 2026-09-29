@@ -127,7 +127,7 @@ jobs:
         path: native/${{ matrix.rid }}
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
@@ -156,7 +156,7 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5.4.0
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '10.0.x'
 
@@ -175,7 +175,7 @@ jobs:
       uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5.4.0
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '10.0.x'
 
@@ -219,7 +219,7 @@ jobs:
         path: native/${{ matrix.rid }}
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v5.4.0
+      uses: actions/setup-dotnet@v6
       with:
         dotnet-version: '10.0.x'
 
