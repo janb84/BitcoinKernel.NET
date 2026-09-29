@@ -138,13 +138,13 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Test with dotnet
-      run: dotnet test --no-restore --logger trx --results-directory "TestResults-${{ matrix.dotnet-version }}"
+      run: dotnet test --no-restore --report-xunit-trx --results-directory "TestResults-${{ matrix.os }}"
 
     - name: Upload dotnet test results
       uses: actions/upload-artifact@v7
       with:
-        name: dotnet-results--${{ matrix.os }}
-        path: TestResults--${{ matrix.os }}
+        name: dotnet-results-${{ matrix.os }}
+        path: TestResults-${{ matrix.os }}
       if: ${{ always() }}
 
   lint:

@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Package version jumps from 0.3.0 to 0.32.0 so the minor version matches the targeted Bitcoin Core release
+- Test project moved from xunit 2.9.3 to xunit.v3 4.0.1; `global.json` opts `dotnet test` into Microsoft.Testing.Platform.
+- Replaced the VSTest-only `coverlet.collector` with `Microsoft.Testing.Extensions.CodeCoverage`
 
 ## [0.3.0] - 2026-05-26
 
