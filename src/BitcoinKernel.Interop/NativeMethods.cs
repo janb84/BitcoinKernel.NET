@@ -91,6 +91,14 @@ internal static class NativeMethods
     public static extern IntPtr ChainParametersCreate(ChainType chain_type);
 
     /// <summary>
+    /// Creates signet chain parameters with a user-provided challenge.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_parameters_create_signet")]
+    public static extern IntPtr ChainParametersCreateSignet(
+        byte[] challenge,
+        nuint challenge_len);
+
+    /// <summary>
     /// Destroys chain parameters.
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chain_parameters_destroy")]
@@ -223,6 +231,16 @@ internal static class NativeMethods
     public static extern void ChainstateManagerOptionsUpdateChainstateDbInMemory(
         IntPtr options,
         int chainstate_db_in_memory);
+
+    /// <summary>
+    /// Sets the total database cache in bytes. The kernel splits it between the
+    /// block tree db, the chainstate db and the in-memory coins cache.
+    /// Returns 0 on success, non-zero if the value is rejected.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_chainstate_manager_options_set_database_cache_bytes")]
+    public static extern int ChainstateManagerOptionsSetDatabaseCacheBytes(
+        IntPtr options,
+        ulong database_cache_bytes);
 
     #endregion
 
@@ -923,6 +941,54 @@ internal static class NativeMethods
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_sequence")]
     public static extern uint TransactionInputGetSequence(IntPtr transaction_input);
 
+    /// <summary>
+    /// Gets the witness stack of a transaction input.
+    /// The returned stack is unowned and only valid for the lifetime of the input.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_witness_stack")]
+    public static extern IntPtr TransactionInputGetWitnessStack(IntPtr transaction_input);
+
+    /// <summary>
+    /// Serializes the script sig of a transaction input.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_transaction_input_get_script_sig")]
+    public static extern int TransactionInputGetScriptSig(
+        IntPtr transaction_input,
+        WriteBytes writer,
+        IntPtr user_data);
+
+    #endregion
+
+    #region WitnessStack Operations
+
+    /// <summary>
+    /// Gets the number of items in a witness stack.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_witness_stack_count_items")]
+    public static extern nuint WitnessStackCountItems(IntPtr witness_stack);
+
+    /// <summary>
+    /// Serializes the witness stack item at the specified index.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_witness_stack_get_item_at")]
+    public static extern int WitnessStackGetItemAt(
+        IntPtr witness_stack,
+        nuint index,
+        WriteBytes writer,
+        IntPtr user_data);
+
+    /// <summary>
+    /// Copies a witness stack.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_witness_stack_copy")]
+    public static extern IntPtr WitnessStackCopy(IntPtr witness_stack);
+
+    /// <summary>
+    /// Destroys a witness stack.
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_witness_stack_destroy")]
+    public static extern void WitnessStackDestroy(IntPtr witness_stack);
+
     #endregion
 
     #region TransactionOutPoint Operations
@@ -978,6 +1044,18 @@ internal static class NativeMethods
     /// </summary>
     [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_tx_validation_state_destroy")]
     public static extern void TxValidationStateDestroy(IntPtr validation_state);
+
+    #endregion
+
+    #region Testing
+
+    /// <summary>
+    /// Overrides the kernel's clock with a fixed Unix timestamp, or restores the
+    /// system clock when timestamp is 0. Affects all kernel time reads globally.
+    /// Returns 0 on success, non-zero if timestamp is outside [0, 4294967295].
+    /// </summary>
+    [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, EntryPoint = "btck_set_mock_time")]
+    public static extern int SetMockTime(long timestamp);
 
     #endregion
 

@@ -10,7 +10,9 @@ This library uses [libbitcoinkernel](https://github.com/bitcoin/bitcoin/tree/mas
 
 | Package | Version | Description |
 |---------|---------|-------------|
-| **BitcoinKernel** | 0.3.0 | Managed wrappers and native bindings |
+| **BitcoinKernel** | 0.32.0 | Managed wrappers and native bindings |
+
+The minor version tracks the Bitcoin Core release whose kernel API the package binds, so 0.32.x targets Bitcoin Core v32.
 
 ```bash
 dotnet add package BitcoinKernel

@@ -310,6 +310,23 @@ public sealed class ChainstateManagerOptions : IDisposable
         return this;
     }
 
+    /// <summary>
+    /// Sets the total database cache in bytes. The kernel splits it between the
+    /// block tree db, the chainstate db and the in-memory coins cache.
+    /// Defaults to 450 MiB when not set. Values below 4 MiB are rejected, and so
+    /// are values above 1 GiB on 32-bit systems.
+    /// </summary>
+    public ChainstateManagerOptions SetDatabaseCacheBytes(ulong databaseCacheBytes)
+    {
+        ThrowIfDisposed();
+        int result = NativeMethods.ChainstateManagerOptionsSetDatabaseCacheBytes(_handle, databaseCacheBytes);
+
+        if (result != 0)
+            throw new KernelException($"Failed to set database cache to {databaseCacheBytes} bytes (error code: {result})");
+
+        return this;
+    }
+
     private void ThrowIfDisposed()
     {
         if (_disposed)

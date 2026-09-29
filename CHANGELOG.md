@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.32.0]
+
+### Added
+- Bindings for the Bitcoin Core v32 kernel API; CI builds `libbitcoinkernel` from `v32.0rc2` (`bc795e60`)
+- `TransactionInput.GetWitnessStack()` and the new `WitnessStack` type for reading witness items
+- `TransactionInput.GetScriptSig()` returning the raw script sig bytes
+- `ChainParameters.CreateSignet(byte[] challenge)` for signets with a custom challenge
+- `ChainstateManagerOptions.SetDatabaseCacheBytes(ulong)` to size the total database cache (default 450 MiB)
+- `MockTime.Set(...)` and `MockTime.Reset()` to override the kernel clock in tests
+
+### Changed
+- Package version jumps from 0.3.0 to 0.32.0 so the minor version matches the targeted Bitcoin Core release
+
 ## [0.3.0] - 2026-05-26
 
 ### Breaking Changes
