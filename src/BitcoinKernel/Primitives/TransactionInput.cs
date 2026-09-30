@@ -56,6 +56,47 @@ public sealed class TransactionInput : IDisposable
     }
 
     /// <summary>
+    /// Gets the witness stack of this input. The returned stack is a
+    /// non-owning view whose lifetime is tied to this input.
+    /// </summary>
+    public WitnessStack GetWitnessStack()
+    {
+        ThrowIfDisposed();
+        var witnessPtr = NativeMethods.TransactionInputGetWitnessStack(_handle);
+        if (witnessPtr == IntPtr.Zero)
+            throw new TransactionException("Failed to get witness stack from transaction input");
+
+        return new WitnessStack(witnessPtr, ownsHandle: false);
+    }
+
+    /// <summary>
+    /// Gets the raw script sig bytes of this input. Empty for inputs that
+    /// carry no script sig, such as native segwit spends.
+    /// </summary>
+    public byte[] GetScriptSig()
+    {
+        ThrowIfDisposed();
+        var bytes = new List<byte>();
+        NativeMethods.WriteBytes writer = (data, len, _) =>
+        {
+            // An empty script sig may arrive as a null pointer with len 0.
+            if (len == 0)
+                return 0;
+
+            var buffer = new byte[len];
+            System.Runtime.InteropServices.Marshal.Copy(data, buffer, 0, (int)len);
+            bytes.AddRange(buffer);
+            return 0;
+        };
+
+        int result = NativeMethods.TransactionInputGetScriptSig(_handle, writer, IntPtr.Zero);
+        if (result != 0)
+            throw new TransactionException("Failed to serialize script sig");
+
+        return bytes.ToArray();
+    }
+
+    /// <summary>
     /// Creates an owned copy of this transaction input.
     /// </summary>
     public TransactionInput Copy()

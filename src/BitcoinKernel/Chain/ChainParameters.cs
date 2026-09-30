@@ -1,3 +1,4 @@
+using BitcoinKernel.Exceptions;
 using BitcoinKernel.Interop;
 using BitcoinKernel.Interop.Enums;
 
@@ -14,6 +15,27 @@ public sealed class ChainParameters : IDisposable
 
         if (_handle == IntPtr.Zero)
             throw new InvalidOperationException($"Failed to create chain parameters for chain type: {chainType}. The native library may not be loaded correctly.");
+    }
+
+    private ChainParameters(IntPtr handle)
+    {
+        _handle = handle;
+    }
+
+    /// <summary>
+    /// Creates signet chain parameters with a custom challenge script.
+    /// Blocks must satisfy the challenge to be valid.
+    /// </summary>
+    /// <param name="challenge">The raw signet challenge script bytes.</param>
+    public static ChainParameters CreateSignet(byte[] challenge)
+    {
+        ArgumentNullException.ThrowIfNull(challenge);
+
+        var handle = NativeMethods.ChainParametersCreateSignet(challenge, (nuint)challenge.Length);
+        if (handle == IntPtr.Zero)
+            throw new ChainParametersException(ChainType.SIGNET, "Failed to create signet chain parameters from the given challenge.");
+
+        return new ChainParameters(handle);
     }
 
     internal IntPtr Handle
