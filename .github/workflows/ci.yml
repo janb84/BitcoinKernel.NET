@@ -12,6 +12,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Use bash everywhere so the same scripts run on the Windows runners too
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build-libbitcoinkernel:
     name: Build libbitcoinkernel (${{ matrix.rid }})
@@ -27,6 +32,13 @@ jobs:
           - os: macos-latest
             rid: osx-x64
             libname: libbitcoinkernel.dylib
+          # Bitcoin Core's vs2026 presets need the VS 2026 image
+          - os: windows-2025-vs2026
+            rid: win-x64
+            # MSVC builds bitcoinkernel.dll, which clashes with the managed
+            # BitcoinKernel.dll on case-insensitive file systems, so ship it with a lib prefix
+            buildname: bitcoinkernel.dll
+            libname: libbitcoinkernel.dll
 
     steps:
     - name: Checkout code
@@ -41,7 +53,7 @@ jobs:
       uses: actions/cache@v6.1.0
       with:
         path: kernel-out
-        key: libbitcoinkernel-${{ matrix.rid }}-${{ steps.bitcoin.outputs.commit }}
+        key: libbitcoinkernel-${{ matrix.rid }}-${{ matrix.libname }}-${{ steps.bitcoin.outputs.commit }}
 
     - name: Checkout Bitcoin Core
       if: steps.cache.outputs.cache-hit != 'true'
@@ -61,8 +73,8 @@ jobs:
       if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'macOS'
       run: brew install ninja boost
 
-    - name: Build libbitcoinkernel
-      if: steps.cache.outputs.cache-hit != 'true'
+    - name: Build libbitcoinkernel (Linux/macOS)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os != 'Windows'
       run: |
         cmake -B bitcoin/build -S bitcoin -G Ninja \
           -DCMAKE_BUILD_TYPE=Release \
@@ -84,10 +96,43 @@ jobs:
           -DENABLE_EXTERNAL_SIGNER=OFF \
           -DCMAKE_INSTALL_LIBDIR=lib
         cmake --build bitcoin/build --target bitcoinkernel --parallel
+
+    - name: Build libbitcoinkernel (Windows)
+      if: steps.cache.outputs.cache-hit != 'true' && runner.os == 'Windows'
+      working-directory: bitcoin
+      run: |
+        # The presets locate the vcpkg toolchain through VCPKG_ROOT
+        export VCPKG_ROOT="${VCPKG_ROOT:-$VCPKG_INSTALLATION_ROOT}"
+        # Static triplet links the MSVC runtime into the DLL, so consumers
+        # don't need the Visual C++ redistributable installed
+        cmake -B build --preset=vs2026-static \
+          -DVCPKG_MANIFEST_NO_DEFAULT_FEATURES=ON \
+          -DBUILD_GUI=OFF \
+          -DWITH_ZMQ=OFF \
+          -DBUILD_SHARED_LIBS=ON \
+          -DBUILD_KERNEL_LIB=ON \
+          -DBUILD_BITCOIN_BIN=OFF \
+          -DBUILD_DAEMON=OFF \
+          -DBUILD_CLI=OFF \
+          -DBUILD_TX=OFF \
+          -DBUILD_UTIL=OFF \
+          -DBUILD_WALLET_TOOL=OFF \
+          -DBUILD_TESTS=OFF \
+          -DBUILD_BENCH=OFF \
+          -DBUILD_FUZZ_BINARY=OFF \
+          -DENABLE_WALLET=OFF \
+          -DENABLE_IPC=OFF \
+          -DENABLE_EXTERNAL_SIGNER=OFF
+        cmake --build build --config Release --target bitcoinkernel --parallel
+
+    - name: Collect libbitcoinkernel
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
         mkdir -p kernel-out
-        LIB_PATH=$(find bitcoin/build \( -type f -o -type l \) -name '${{ matrix.libname }}' | head -n1)
+        BUILD_NAME='${{ matrix.buildname || matrix.libname }}'
+        LIB_PATH=$(find bitcoin/build \( -type f -o -type l \) -name "$BUILD_NAME" | head -n1)
         if [ -z "$LIB_PATH" ]; then
-          echo "::error::${{ matrix.libname }} not found in build output:"
+          echo "::error::$BUILD_NAME not found in build output:"
           find bitcoin/build -name 'libbitcoinkernel*'
           exit 1
         fi
@@ -107,13 +152,15 @@ jobs:
     needs: build-libbitcoinkernel
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, windows-latest]
         dotnet-version: ['10.0.x']
         include:
           - os: ubuntu-latest
             rid: linux-x64
           - os: macos-latest
             rid: osx-x64
+          - os: windows-latest
+            rid: win-x64
       fail-fast: false
 
     steps:
@@ -199,9 +246,18 @@ jobs:
           - os: macos-latest
             platform: darwin_arm64
             rid: osx-x64
+            archive: tar.gz
+            exe: ''
           - os: ubuntu-latest
             platform: linux_amd64
             rid: linux-x64
+            archive: tar.gz
+            exe: ''
+          - os: windows-latest
+            platform: windows_amd64
+            rid: win-x64
+            archive: zip
+            exe: .exe
 
     env:
       TEST_VERSION: '0.0.4-alpha.pr17.1'
@@ -231,14 +287,20 @@ jobs:
     - name: Download test runner
       run: |
         mkdir -p ${{ env.TEST_DIR }}
-        DOWNLOAD_URL="https://github.com/${{ env.TEST_REPO }}/releases/download/v${{ env.TEST_VERSION }}/kernel-bindings-tests_${{ env.TEST_VERSION }}_${{ matrix.platform }}.tar.gz"
+        ARCHIVE=${{ env.TEST_DIR }}/test-runner.${{ matrix.archive }}
+        DOWNLOAD_URL="https://github.com/${{ env.TEST_REPO }}/releases/download/v${{ env.TEST_VERSION }}/kernel-bindings-tests_${{ env.TEST_VERSION }}_${{ matrix.platform }}.${{ matrix.archive }}"
         echo "Downloading from: $DOWNLOAD_URL"
-        curl --fail -L -o ${{ env.TEST_DIR }}/test-runner.tar.gz "$DOWNLOAD_URL"
-        tar -xzf ${{ env.TEST_DIR }}/test-runner.tar.gz -C ${{ env.TEST_DIR }}
-        chmod +x ${{ env.TEST_DIR }}/runner
+        curl --fail -L -o "$ARCHIVE" "$DOWNLOAD_URL"
+        if [ "${{ matrix.archive }}" = "zip" ]; then
+          # Git Bash's tar can't read zip files, the runner image ships 7-Zip
+          7z x -y -o${{ env.TEST_DIR }} "$ARCHIVE"
+        else
+          tar -xzf "$ARCHIVE" -C ${{ env.TEST_DIR }}
+        fi
+        chmod +x ${{ env.TEST_DIR }}/runner${{ matrix.exe }}
 
     - name: Run conformance tests
       run: |
-        ${{ env.TEST_DIR }}/runner --handler handler-bin/kernel-bindings-test-handler
+        ${{ env.TEST_DIR }}/runner${{ matrix.exe }} --handler handler-bin/kernel-bindings-test-handler${{ matrix.exe }}
 
 

@@ -70,8 +70,8 @@ static class NativeLibraryLoader
         {
             return
             [
-                "bitcoinkernel.dll",
-                Path.Combine(basePath, "runtimes", "win-x64", "native", "bitcoinkernel.dll")
+                "libbitcoinkernel.dll",
+                Path.Combine(basePath, "runtimes", "win-x64", "native", "libbitcoinkernel.dll")
             ];
         }
         else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))

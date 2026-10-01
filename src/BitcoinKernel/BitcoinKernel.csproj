@@ -38,9 +38,10 @@
       </_PackageFiles>
       
       <!-- Include native libraries from runtimes folder -->
+      <!-- NuGet appends each file's RecursiveDir (e.g. win-x64/native/) to the trailing-slash path -->
       <_PackageFiles Include="$(OutputPath)runtimes\**\*.*" Condition="Exists('$(OutputPath)runtimes')">
-        <BuildAction>Content</BuildAction>
-        <PackagePath>runtimes/%(RecursiveDir)%(Filename)%(Extension)</PackagePath>
+        <BuildAction>None</BuildAction>
+        <PackagePath>runtimes/</PackagePath>
       </_PackageFiles>
     </ItemGroup>
   </Target>
