@@ -101,8 +101,12 @@ dotnet test
 ## Native Library
 
 This package includes pre-built `libbitcoinkernel` binaries for:
-- macOS (x64, ARM64)
-- others will follow
+
+| Platform | File |
+|----------|------|
+| Linux x64 | `native/linux-x64/libbitcoinkernel.so` |
+| macOS ARM64 (Apple Silicon) | `native/osx-x64/libbitcoinkernel.dylib` |
+| Windows x64 | `native/win-x64/libbitcoinkernel.dll` |
 
 For other platforms, you'll need to build libbitcoinkernel from the [Bitcoin Core repository](https://github.com/bitcoin/bitcoin).
 
