@@ -14,7 +14,10 @@ internal static class NativeMethods
 {
     #region Library Configuration
 
-    private const string LibName = "bitcoinkernel";
+    // Keep the "lib" prefix on every platform. On Windows a plain "bitcoinkernel.dll"
+    // matches the managed BitcoinKernel.dll (file names are case-insensitive), and
+    // the loader would bind to the managed assembly instead of the native library.
+    private const string LibName = "libbitcoinkernel";
 
     // For loading platform-specific libraries
     static NativeMethods()
